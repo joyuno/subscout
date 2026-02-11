@@ -14,6 +14,7 @@ import {
 } from '@/lib/types/subscription';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface ServicePresetsProps {
   onSelect: (preset: ServicePreset) => void;
@@ -82,7 +83,9 @@ export function ServicePresets({ onSelect }: ServicePresetsProps) {
                   className="h-auto flex-col items-center justify-center p-4 hover:border-primary"
                   onClick={() => onSelect(preset)}
                 >
-                  <span className="mb-2 text-3xl">{preset.icon}</span>
+                  <div className="mb-2">
+                    <BrandIcon name={preset.name} icon={preset.icon} size="md" />
+                  </div>
                   <span className="text-center text-sm font-medium">
                     {preset.name}
                   </span>

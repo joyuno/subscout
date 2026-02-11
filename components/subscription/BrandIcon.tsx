@@ -9,11 +9,27 @@ interface BrandIconProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
+/**
+ * Favicon URL sources in priority order.
+ * Falls back through each source on image load error.
+ */
+function getFaviconUrls(domain: string): string[] {
+  return [
+    // Google's high-res favicon V2 API (best quality)
+    `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}&size=128`,
+    // icon.horse - good fallback
+    `https://icon.horse/icon/${domain}?size=large`,
+    // Google S2 classic API
+    `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
+  ];
+}
+
 export function BrandIcon({ name, icon, size = 'md' }: BrandIconProps) {
   const preset = getServicePreset(name);
   const brandColor = preset?.brandColor;
   const domain = preset?.domain;
-  const [imgError, setImgError] = useState(false);
+  const [faviconIndex, setFaviconIndex] = useState(0);
+  const [allFailed, setAllFailed] = useState(false);
 
   const sizeClasses = {
     sm: 'w-8 h-8 text-sm',
@@ -21,16 +37,26 @@ export function BrandIcon({ name, icon, size = 'md' }: BrandIconProps) {
     lg: 'w-16 h-16 text-3xl',
   };
 
-  // If we have a domain and the image hasn't errored, show the favicon
-  if (domain && !imgError) {
-    const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+  const faviconUrls = domain ? getFaviconUrls(domain) : [];
+
+  const handleImgError = () => {
+    if (faviconIndex < faviconUrls.length - 1) {
+      setFaviconIndex((prev) => prev + 1);
+    } else {
+      setAllFailed(true);
+    }
+  };
+
+  // If we have a domain and images haven't all failed, show the favicon
+  if (domain && !allFailed && faviconUrls.length > 0) {
     return (
-      <div className={`${sizeClasses[size]} rounded-2xl flex items-center justify-center shrink-0 shadow-sm overflow-hidden bg-white`}>
+      <div className={`${sizeClasses[size]} rounded-2xl flex items-center justify-center shrink-0 shadow-sm overflow-hidden bg-card border border-border`}>
         <img
-          src={faviconUrl}
+          src={faviconUrls[faviconIndex]}
           alt={`${name} logo`}
-          className="w-full h-full object-contain p-1"
-          onError={() => setImgError(true)}
+          className="w-full h-full object-contain p-1.5"
+          onError={handleImgError}
+          loading="lazy"
         />
       </div>
     );
