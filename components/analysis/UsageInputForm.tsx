@@ -62,8 +62,9 @@ export function UsageInputForm({
 
     if (inputMode === 'manual') {
       Object.entries(usageData).forEach(([subscriptionId, value]) => {
-        const minutes = parseInt(value, 10);
-        if (minutes > 0) {
+        const hours = parseFloat(value);
+        if (hours > 0) {
+          const minutes = Math.round(hours * 60);
           addUsage(subscriptionId, weekStartStr, minutes, 'manual');
           count++;
         }
@@ -99,7 +100,7 @@ export function UsageInputForm({
           <div>
             <CardTitle>주간 사용량 입력</CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              지난 주 사용 시간을 입력해주세요
+              지난 주 사용 시간을 시간 단위로 입력해주세요
             </p>
           </div>
           <Link
@@ -132,7 +133,7 @@ export function UsageInputForm({
                       <p className="font-medium">{sub.name}</p>
                       {existing && (
                         <p className="text-xs text-muted-foreground">
-                          이전: {existing.usageMinutes}분
+                          이전: {(existing.usageMinutes / 60).toFixed(1)}시간
                         </p>
                       )}
                     </div>
@@ -146,8 +147,9 @@ export function UsageInputForm({
                         }
                         className="w-24 text-right"
                         min="0"
+                        step="0.5"
                       />
-                      <Label className="text-sm text-muted-foreground">분</Label>
+                      <Label className="text-sm text-muted-foreground">시간</Label>
                     </div>
                   </div>
                 );

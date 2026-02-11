@@ -192,6 +192,7 @@ export const BUNDLE_DEALS: BundleDeal[] = [
     provider: '네이버 + 티빙',
     icon: '🤝',
     note: '별도 티빙 구독 없이 네이버 플러스만으로 이용 가능',
+    url: 'https://nid.naver.com/membership/my',
     savingsEstimate: '티빙 광고형 5,500원 무료',
   },
   {
@@ -203,6 +204,7 @@ export const BUNDLE_DEALS: BundleDeal[] = [
     provider: '배달앱',
     icon: '🍔',
     note: '쿠팡 와우 가입 시 쿠팡이츠 무료배달 포함',
+    url: 'https://www.baemin.com/club',
     savingsEstimate: '월 4,990원',
   },
 ];

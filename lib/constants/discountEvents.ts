@@ -25,6 +25,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: 'OTT 스트리밍 결제 시 10% 할인',
     conditions: '전월 실적 30만원 이상',
     validUntil: '상시',
+    url: 'https://www.samsungcard.com/personal/card/card-detail?id=iD_ON',
     icon: '💳',
   },
   {
@@ -37,6 +38,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: '구독 서비스 결제 시 월 최대 5,000원 할인',
     conditions: '전월 실적 40만원 이상 시 5,000원 / 30만원 이상 시 2,000원',
     validUntil: '상시',
+    url: 'https://www.shinhancard.com/pconts/html/card/apply/credit/1199524_2207.html',
     icon: '💳',
   },
   {
@@ -49,6 +51,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: '디즈니+ 등 OTT 구독 시 최대 10,000원 할인',
     conditions: '신규 발급 또는 전월 실적 조건 충족 시',
     validUntil: '상시',
+    url: 'https://card.kbcard.com/CRD/DICA/DICACC01',
     icon: '💳',
   },
   {
@@ -61,6 +64,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: 'OTT 결제 시 5% 할인 (최대 2,000원)',
     conditions: '전월 실적 30만원 이상',
     validUntil: '상시',
+    url: 'https://card.nonghyup.com/app/card/credit',
     icon: '💳',
   },
   {
@@ -73,6 +77,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: 'OTT 월 1,500원 즉시 할인',
     conditions: '전월 실적 30만원 이상',
     validUntil: '상시',
+    url: 'https://www.lottecard.co.kr/app/LPCDAAF_V100.lc',
     icon: '💳',
   },
   {
@@ -85,6 +90,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: '디즈니+ 구독 50% 할인',
     conditions: '전월 실적 조건 충족 시',
     validUntil: '상시',
+    url: 'https://www.samsungcard.com/personal/card/card-detail?id=iD_SWEET',
     icon: '💳',
   },
   // Telecom promotions
@@ -135,6 +141,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: '티빙 광고형 + 네이버웹툰 쿠키 30개 월 6,500원',
     conditions: 'SKT 가입자',
     validUntil: '상시',
+    url: 'https://www.tworld.co.kr',
     icon: '📱',
   },
   {
@@ -146,6 +153,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: '무제한 요금제 가입 시 티빙 또는 디즈니+ 최대 24개월 무료',
     conditions: 'KT 무제한 요금제 가입자',
     validUntil: '상시',
+    url: 'https://product.kt.com/benefit/membership/web/benefit_pkg.html',
     icon: '📡',
   },
   // Promotions
@@ -158,6 +166,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: '네이버 플러스 멤버십(4,900원)으로 티빙 광고형 무료 이용',
     conditions: '네이버 플러스 멤버십 가입 후 혜택 선택',
     validUntil: '상시',
+    url: 'https://nid.naver.com/membership/my',
     icon: '💚',
   },
   {
@@ -170,6 +179,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: '디즈니+ 연간 구독 시 최대 40% 할인',
     conditions: '연간 구독 선택 시',
     validUntil: '상시',
+    url: 'https://www.disneyplus.com/ko-kr',
     icon: '🏰',
   },
   // Bundle deals
@@ -182,6 +192,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: '3개 OTT 결합 패키지로 개별 구독 대비 할인',
     conditions: '결합 상품 가입',
     validUntil: '상시',
+    url: 'https://www.tving.com/event',
     icon: '📦',
   },
   {
@@ -193,6 +204,7 @@ export const DISCOUNT_EVENTS: DiscountEvent[] = [
     description: 'CGV 특정 영화 예매 시 티빙 1개월 무료 쿠폰 제공',
     conditions: 'CGV 이벤트 기간 중 특정 영화 예매 시',
     validUntil: '이벤트별 상이',
+    url: 'https://www.cgv.co.kr/culture-event/event/',
     icon: '🎬',
   },
 ];
