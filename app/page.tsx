@@ -117,6 +117,8 @@ export default function DashboardPage() {
           amount={activeCount}
           subtitle={`${subscriptions.length}개 중 ${activeCount}개 활성`}
           icon={<Calendar className="w-5 h-5" />}
+          isCurrency={false}
+          suffix="개"
         />
         <CostSummaryCard
           title="누적 절약액"

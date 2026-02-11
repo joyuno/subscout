@@ -12,6 +12,10 @@ interface CostSummaryCardProps {
     isPositive: boolean;
   };
   icon?: React.ReactNode;
+  /** When true, format amount as currency (default). When false, display raw number with suffix. */
+  isCurrency?: boolean;
+  /** Suffix to append to the amount when isCurrency is false (e.g., "개") */
+  suffix?: string;
 }
 
 export function CostSummaryCard({
@@ -20,6 +24,8 @@ export function CostSummaryCard({
   subtitle,
   change,
   icon,
+  isCurrency = true,
+  suffix,
 }: CostSummaryCardProps) {
   return (
     <div className="bg-card rounded-2xl border border-border p-6 hover:shadow-sm transition-all duration-200">
@@ -34,7 +40,7 @@ export function CostSummaryCard({
 
       <div className="space-y-2">
         <p className="text-4xl font-bold text-foreground tracking-tight">
-          {formatKRW(amount)}
+          {isCurrency ? formatKRW(amount) : `${amount.toLocaleString('ko-KR')}${suffix || ''}`}
         </p>
 
         {subtitle && (

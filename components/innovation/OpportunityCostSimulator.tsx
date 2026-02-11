@@ -10,8 +10,9 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 
 export function OpportunityCostSimulator() {
+  const subscriptions = useSubscriptionStore((s) => s.subscriptions);
   const getActiveSubscriptions = useSubscriptionStore((s) => s.getActiveSubscriptions);
-  const activeSubscriptions = useMemo(() => getActiveSubscriptions(), []);
+  const activeSubscriptions = useMemo(() => getActiveSubscriptions(), [subscriptions, getActiveSubscriptions]);
 
   const [selectedSubIds, setSelectedSubIds] = useState<Set<string>>(new Set());
   const [years, setYears] = useState(10);

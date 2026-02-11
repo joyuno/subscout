@@ -57,11 +57,12 @@ function CostFeelingItem({ subscription }: CostFeelingItemProps) {
 }
 
 export function CostFeelingMeter() {
+  const subscriptions = useSubscriptionStore((s) => s.subscriptions);
   const getActiveSubscriptions = useSubscriptionStore((s) => s.getActiveSubscriptions);
   const getTotalMonthlyCost = useSubscriptionStore((s) => s.getTotalMonthlyCost);
 
-  const activeSubscriptions = useMemo(() => getActiveSubscriptions(), []);
-  const totalCost = useMemo(() => getTotalMonthlyCost(), []);
+  const activeSubscriptions = useMemo(() => getActiveSubscriptions(), [subscriptions, getActiveSubscriptions]);
+  const totalCost = useMemo(() => getTotalMonthlyCost(), [subscriptions, getTotalMonthlyCost]);
   const totalFeeling = useMemo(() => getTotalCostFeeling(totalCost), [totalCost]);
 
   if (activeSubscriptions.length === 0) {
