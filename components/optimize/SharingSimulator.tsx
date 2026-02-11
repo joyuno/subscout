@@ -10,6 +10,7 @@ import { calculateSharingSavings } from '@/lib/calculations/sharingOptimize';
 import type { SharingOpportunity } from '@/lib/calculations/sharingOptimize';
 import { Users, TrendingDown, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface SharingSimulatorProps {
   opportunity: SharingOpportunity;
@@ -35,7 +36,7 @@ export function SharingSimulator({ opportunity }: SharingSimulatorProps) {
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">{opportunity.subscription.icon}</span>
+            <BrandIcon name={opportunity.subscription.name} icon={opportunity.subscription.icon} size="sm" />
             <div>
               <CardTitle className="text-lg">
                 {opportunity.subscription.name}

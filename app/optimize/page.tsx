@@ -9,10 +9,11 @@ import {
   SharingSimulator,
   PlanComparison,
   BundleOptimizer,
+  DiscountEvents,
 } from '@/components/optimize';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingDown, Users, Package, Lightbulb } from 'lucide-react';
+import { TrendingDown, Users, Package, Lightbulb, Percent } from 'lucide-react';
 
 export default function OptimizePage() {
   const [mounted, setMounted] = useState(false);
@@ -121,7 +122,7 @@ export default function OptimizePage() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="sharing" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 rounded-xl p-1.5 bg-accent">
+        <TabsList className="grid w-full grid-cols-3 rounded-xl p-1.5 bg-accent">
           <TabsTrigger
             value="sharing"
             className="flex items-center gap-2 rounded-lg font-semibold"
@@ -145,6 +146,13 @@ export default function OptimizePage() {
                 {bundleOptimizations.length}
               </span>
             )}
+          </TabsTrigger>
+          <TabsTrigger
+            value="discount"
+            className="flex items-center gap-2 rounded-lg font-semibold"
+          >
+            <Percent className="h-4 w-4" />
+            <span>할인 이벤트</span>
           </TabsTrigger>
         </TabsList>
 
@@ -203,6 +211,18 @@ export default function OptimizePage() {
           </div>
 
           <BundleOptimizer optimizations={bundleOptimizations} />
+        </TabsContent>
+
+        {/* Discount Events Tab */}
+        <TabsContent value="discount" className="space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold mb-2">할인 이벤트</h2>
+            <p className="text-sm text-muted-foreground">
+              카드 할인, 통신사 혜택, 프로모션 등 구독료를 아낄 수 있는 정보를 모았어요
+            </p>
+          </div>
+
+          <DiscountEvents subscriptions={subscriptions} />
         </TabsContent>
       </Tabs>
 

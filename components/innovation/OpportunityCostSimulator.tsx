@@ -8,6 +8,12 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
+
+// Toss-aligned chart colors
+const TOSS_SAVINGS_COLOR = '#1FC08E';
+const TOSS_SP500_COLOR = '#3182F6';
+const TOSS_KOSPI_COLOR = '#FFA826';
 
 export function OpportunityCostSimulator() {
   const subscriptions = useSubscriptionStore((s) => s.subscriptions);
@@ -73,45 +79,60 @@ export function OpportunityCostSimulator() {
     };
   });
 
+  const scenarioColors = [TOSS_SAVINGS_COLOR, TOSS_SP500_COLOR, TOSS_KOSPI_COLOR];
+
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-2xl font-bold mb-2">만약에 계산기</h3>
-        <p className="text-muted-foreground">구독 대신 투자했다면 얼마나 모을 수 있었을까요?</p>
+        <h3 className="text-2xl font-extrabold text-foreground mb-1">만약에 계산기</h3>
+        <p className="text-sm text-muted-foreground font-medium">구독 대신 투자했다면 얼마나 모을 수 있었을까요?</p>
       </div>
 
       {/* Subscription Selection */}
-      <div className="rounded-xl border bg-card p-6">
-        <h4 className="font-semibold mb-4">절약할 구독 선택</h4>
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {activeSubscriptions.map((sub) => (
-            <div key={sub.id} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-              <Checkbox
-                id={`sub-${sub.id}`}
-                checked={selectedSubIds.has(sub.id)}
-                onCheckedChange={() => handleToggle(sub.id)}
-              />
-              <label htmlFor={`sub-${sub.id}`} className="flex-1 cursor-pointer flex items-center gap-2">
-                <span className="text-xl">{sub.icon}</span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">{sub.name}</div>
-                  <div className="text-xs text-muted-foreground">{formatKRW(sub.monthlyPrice)}/월</div>
-                </div>
-              </label>
-            </div>
-          ))}
+      <div className="rounded-2xl border border-border bg-card p-6">
+        <h4 className="text-sm font-bold text-foreground mb-4">절약할 구독 선택</h4>
+        <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+          {activeSubscriptions.map((sub) => {
+            const isSelected = selectedSubIds.has(sub.id);
+            return (
+              <div
+                key={sub.id}
+                className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 cursor-pointer border ${
+                  isSelected
+                    ? 'bg-primary/[0.05] border-primary/20'
+                    : 'border-transparent hover:bg-accent/50'
+                }`}
+                onClick={() => handleToggle(sub.id)}
+              >
+                <Checkbox
+                  id={`sub-${sub.id}`}
+                  checked={isSelected}
+                  onCheckedChange={() => handleToggle(sub.id)}
+                />
+                <label htmlFor={`sub-${sub.id}`} className="flex-1 cursor-pointer flex items-center gap-2">
+                  <BrandIcon name={sub.name} icon={sub.icon} size="sm" />
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold text-foreground">{sub.name}</div>
+                    <div className="text-xs text-muted-foreground font-medium">{formatKRW(sub.monthlyPrice)}/월</div>
+                  </div>
+                </label>
+              </div>
+            );
+          })}
         </div>
 
-        <div className="mt-4 p-4 bg-primary/5 rounded-lg">
-          <div className="text-sm text-muted-foreground">월 절약액</div>
-          <div className="text-3xl font-bold text-primary">{formatKRW(monthlySavings)}</div>
+        {/* Monthly savings badge */}
+        <div className="mt-4 p-4 bg-primary/[0.04] rounded-xl border border-primary/10">
+          <div className="text-xs text-muted-foreground font-semibold mb-1">월 절약액</div>
+          <div className="text-3xl font-extrabold text-primary tracking-tight">{formatKRW(monthlySavings)}</div>
         </div>
       </div>
 
       {/* Year Slider */}
-      <div className="rounded-xl border bg-card p-6">
+      <div className="rounded-2xl border border-border bg-card p-6">
         <Label className="mb-4 block">
-          <span className="text-base font-semibold">투자 기간: {years}년</span>
+          <span className="text-sm font-bold text-foreground">투자 기간</span>
+          <span className="ml-2 text-2xl font-extrabold text-primary">{years}년</span>
         </Label>
         <Slider
           value={[years]}
@@ -119,10 +140,11 @@ export function OpportunityCostSimulator() {
           min={1}
           max={30}
           step={1}
-          className="mb-2"
+          className="mb-3"
         />
-        <div className="flex justify-between text-xs text-muted-foreground">
+        <div className="flex justify-between text-xs text-muted-foreground font-medium">
           <span>1년</span>
+          <span>15년</span>
           <span>30년</span>
         </div>
       </div>
@@ -131,89 +153,134 @@ export function OpportunityCostSimulator() {
       {monthlySavings > 0 && (
         <>
           {/* Chart */}
-          <div className="rounded-xl border bg-card p-6">
-            <h4 className="font-semibold mb-4">투자 시뮬레이션</h4>
-            <ResponsiveContainer width="100%" height={400}>
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <h4 className="text-sm font-bold text-foreground mb-5">투자 시뮬레이션</h4>
+            <ResponsiveContainer width="100%" height={360}>
               <AreaChart data={chartData}>
                 <defs>
-                  <linearGradient id="colorSavings" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                  <linearGradient id="tossGradSavings" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={TOSS_SAVINGS_COLOR} stopOpacity={0.2} />
+                    <stop offset="100%" stopColor={TOSS_SAVINGS_COLOR} stopOpacity={0} />
                   </linearGradient>
-                  <linearGradient id="colorSP500" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                  <linearGradient id="tossGradSP500" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={TOSS_SP500_COLOR} stopOpacity={0.2} />
+                    <stop offset="100%" stopColor={TOSS_SP500_COLOR} stopOpacity={0} />
                   </linearGradient>
-                  <linearGradient id="colorKospi" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                  <linearGradient id="tossGradKospi" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={TOSS_KOSPI_COLOR} stopOpacity={0.2} />
+                    <stop offset="100%" stopColor={TOSS_KOSPI_COLOR} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <CartesianGrid
+                  strokeDasharray="none"
+                  stroke="var(--color-border, hsl(var(--border)))"
+                  strokeOpacity={0.5}
+                  vertical={false}
+                />
                 <XAxis
                   dataKey="year"
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
-                  label={{ value: '연도', position: 'insideBottom', offset: -5, fill: '#6b7280' }}
+                  tick={{ fill: 'var(--color-muted-foreground, #6b7280)', fontSize: 11, fontWeight: 500 }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(v) => `${v}년`}
                 />
                 <YAxis
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: 'var(--color-muted-foreground, #6b7280)', fontSize: 11, fontWeight: 500 }}
                   tickFormatter={(v) => formatKRWCompact(v)}
-                  label={{ value: '총액', angle: -90, position: 'insideLeft', fill: '#6b7280' }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={60}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
+                    backgroundColor: 'var(--color-card, hsl(var(--card)))',
+                    color: 'var(--color-foreground, hsl(var(--foreground)))',
+                    border: '1px solid var(--color-border, hsl(var(--border)))',
+                    borderRadius: '16px',
+                    padding: '12px 16px',
+                    boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                  }}
+                  itemStyle={{
+                    color: 'var(--color-foreground, hsl(var(--foreground)))',
+                    fontWeight: 600,
+                    fontSize: '13px',
+                  }}
+                  labelStyle={{
+                    color: 'var(--color-muted-foreground, #6b7280)',
+                    fontWeight: 700,
+                    fontSize: '13px',
+                    marginBottom: '4px',
                   }}
                   formatter={(value) => (value != null ? formatKRW(value as number) : '')}
                   labelFormatter={(label) => `${label}년 후`}
                 />
-                <Legend />
+                <Legend
+                  wrapperStyle={{ fontSize: '12px', fontWeight: 600 }}
+                  iconType="circle"
+                  iconSize={8}
+                />
                 <Area
                   type="monotone"
                   dataKey="적금"
-                  stroke="#10b981"
+                  stroke={TOSS_SAVINGS_COLOR}
                   fillOpacity={1}
-                  fill="url(#colorSavings)"
-                  strokeWidth={2}
+                  fill="url(#tossGradSavings)"
+                  strokeWidth={2.5}
+                  dot={false}
+                  activeDot={{ r: 5, strokeWidth: 2, stroke: TOSS_SAVINGS_COLOR, fill: 'var(--color-card, white)' }}
                 />
                 <Area
                   type="monotone"
                   dataKey="S&P 500"
-                  stroke="#3b82f6"
+                  stroke={TOSS_SP500_COLOR}
                   fillOpacity={1}
-                  fill="url(#colorSP500)"
-                  strokeWidth={2}
+                  fill="url(#tossGradSP500)"
+                  strokeWidth={2.5}
+                  dot={false}
+                  activeDot={{ r: 5, strokeWidth: 2, stroke: TOSS_SP500_COLOR, fill: 'var(--color-card, white)' }}
                 />
                 <Area
                   type="monotone"
                   dataKey="코스피"
-                  stroke="#f59e0b"
+                  stroke={TOSS_KOSPI_COLOR}
                   fillOpacity={1}
-                  fill="url(#colorKospi)"
-                  strokeWidth={2}
+                  fill="url(#tossGradKospi)"
+                  strokeWidth={2.5}
+                  dot={false}
+                  activeDot={{ r: 5, strokeWidth: 2, stroke: TOSS_KOSPI_COLOR, fill: 'var(--color-card, white)' }}
                 />
               </AreaChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Final Values */}
+          {/* Final Values -- Toss-style metric cards */}
           <div className="grid gap-4 md:grid-cols-3">
-            {finalValues.map((item) => (
-              <div key={item.name} className="rounded-xl border bg-gradient-to-br from-primary/5 to-primary/10 p-6">
-                <div className="text-3xl mb-2">{item.emoji}</div>
-                <div className="text-sm text-muted-foreground mb-1">{item.name}</div>
-                <div className="text-2xl font-bold">{formatKRWCompact(item.value)}</div>
-                <div className="text-xs text-muted-foreground mt-1">{years}년 후</div>
+            {finalValues.map((item, index) => (
+              <div
+                key={item.name}
+                className="rounded-2xl border border-border bg-card p-5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-300"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: scenarioColors[index] }}
+                  />
+                  <span className="text-xs font-bold text-muted-foreground">{item.name}</span>
+                </div>
+                <div className="text-3xl font-extrabold text-foreground tracking-tight mb-1">
+                  {formatKRWCompact(item.value)}
+                </div>
+                <div className="text-xs text-muted-foreground font-medium">{years}년 후 예상 금액</div>
               </div>
             ))}
           </div>
 
           {/* Emotional Hook */}
           {selectedSubIds.size > 0 && (
-            <div className="rounded-xl bg-gradient-to-r from-orange-500/10 to-red-500/10 border-2 border-orange-500/20 p-6 text-center">
-              <p className="text-lg font-semibold mb-2">
+            <div className="rounded-2xl bg-primary/[0.04] border border-primary/15 p-6 text-center">
+              <p className="text-sm font-semibold text-foreground mb-2">
                 {Array.from(selectedSubIds)
                   .slice(0, 2)
                   .map((id) => activeSubscriptions.find((s) => s.id === id)?.name)
@@ -221,10 +288,10 @@ export function OpportunityCostSimulator() {
                   .join('과 ')}{' '}
                 대신 투자했다면...
               </p>
-              <p className="text-3xl font-bold text-primary">
+              <p className="text-4xl font-extrabold text-primary tracking-tight">
                 {formatKRWCompact(finalValues[1].value)}
               </p>
-              <p className="text-sm text-muted-foreground mt-1">를 모을 수 있었어요 (S&P 500 기준)</p>
+              <p className="text-sm text-muted-foreground mt-1.5 font-medium">를 모을 수 있었어요 (S&P 500 기준)</p>
             </div>
           )}
         </>

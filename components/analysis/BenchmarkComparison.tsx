@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import type { ROIAnalysis } from '@/lib/types/usage';
 import { analyzeBenchmark } from '@/lib/calculations/benchmark';
 import { formatMinutesToHM } from '@/lib/utils/formatDuration';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface BenchmarkComparisonProps {
   analyses: ROIAnalysis[];
@@ -72,7 +73,7 @@ export function BenchmarkComparison({ analyses }: BenchmarkComparisonProps) {
                 className="rounded-lg border p-4"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-2xl">{analysis.icon}</span>
+                  <BrandIcon name={analysis.subscriptionName} icon={analysis.icon} size="sm" />
                   <div className="flex-1">
                     <h4 className="font-semibold">{analysis.subscriptionName}</h4>
                     <p className="text-xs text-muted-foreground">

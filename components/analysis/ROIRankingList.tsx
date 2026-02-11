@@ -6,6 +6,7 @@ import type { ROIAnalysis } from '@/lib/types/usage';
 import { ROI_GRADE_CONFIG } from '@/lib/types/usage';
 import { formatKRW } from '@/lib/utils/formatCurrency';
 import { TrendingDown } from 'lucide-react';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface ROIRankingListProps {
   analyses: ROIAnalysis[];
@@ -65,7 +66,7 @@ export function ROIRankingList({ analyses }: ROIRankingListProps) {
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-bold">
                     {index + 1}
                   </div>
-                  <span className="text-2xl">{analysis.icon}</span>
+                  <BrandIcon name={analysis.subscriptionName} icon={analysis.icon} size="sm" />
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold truncate">
                       {analysis.subscriptionName}

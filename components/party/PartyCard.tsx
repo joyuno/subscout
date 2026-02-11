@@ -7,6 +7,7 @@ import { formatKRW } from '@/lib/utils/formatCurrency';
 import type { SharingParty } from '@/lib/types/party';
 import { Users, Share2, UserMinus, Lock } from 'lucide-react';
 import { SERVICE_PRESETS } from '@/lib/constants/servicePresets';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface PartyCardProps {
   party: SharingParty;
@@ -46,7 +47,7 @@ export function PartyCard({
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">{preset?.icon || '📦'}</span>
+            <BrandIcon name={party.subscriptionName} icon={preset?.icon || '📦'} size="md" />
             <div>
               <CardTitle className="text-lg">
                 {party.subscriptionName}

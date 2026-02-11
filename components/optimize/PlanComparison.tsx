@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { formatKRW } from '@/lib/utils/formatCurrency';
 import type { SharingOpportunity } from '@/lib/calculations/sharingOptimize';
 import { Check, X } from 'lucide-react';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface PlanComparisonProps {
   opportunity: SharingOpportunity;
@@ -19,7 +20,7 @@ export function PlanComparison({ opportunity }: PlanComparisonProps) {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-3">
-          <span className="text-2xl">{opportunity.subscription.icon}</span>
+          <BrandIcon name={opportunity.subscription.name} icon={opportunity.subscription.icon} size="sm" />
           <div>
             <CardTitle className="text-lg">
               {opportunity.subscription.name} 요금제 비교

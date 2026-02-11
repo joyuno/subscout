@@ -6,6 +6,7 @@ import { formatKRW } from '@/lib/utils/formatCurrency';
 import type { BundleOptimization } from '@/lib/calculations/bundleOptimize';
 import { BUNDLE_DEALS, type BundleDeal } from '@/lib/constants/bundleDeals';
 import { Package, TrendingDown, ArrowRight, ExternalLink, Sparkles } from 'lucide-react';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface BundleOptimizerProps {
   optimizations: BundleOptimization[];
@@ -149,7 +150,7 @@ export function BundleOptimizer({ optimizations }: BundleOptimizerProps) {
                         className="flex items-center justify-between text-sm bg-muted/30 rounded-lg p-2.5"
                       >
                         <div className="flex items-center gap-2">
-                          <span>{sub.icon}</span>
+                          <BrandIcon name={sub.name} icon={sub.icon} size="sm" />
                           <span>{sub.name}</span>
                         </div>
                         <span className="text-muted-foreground">

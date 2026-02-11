@@ -8,6 +8,7 @@ import { ROI_GRADE_CONFIG } from '@/lib/types/usage';
 import { formatKRW } from '@/lib/utils/formatCurrency';
 import { formatMinutesToHM } from '@/lib/utils/formatDuration';
 import { TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface ROIScoreCardProps {
   analysis: ROIAnalysis;
@@ -36,7 +37,7 @@ export function ROIScoreCard({ analysis }: ROIScoreCardProps) {
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">{analysis.icon}</span>
+            <BrandIcon name={analysis.subscriptionName} icon={analysis.icon} size="md" />
             <div>
               <CardTitle className="text-lg">{analysis.subscriptionName}</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">

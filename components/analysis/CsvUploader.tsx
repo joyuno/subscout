@@ -15,6 +15,7 @@ import { useUsageStore } from '@/stores/usageStore';
 import { useSubscriptionStore } from '@/stores/subscriptionStore';
 import { parseCSV, type ParsedUsageEntry } from '@/lib/utils/csvParser';
 import { Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface CsvUploaderProps {
   onComplete?: () => void;
@@ -210,7 +211,10 @@ export function CsvUploader({ onComplete }: CsvUploaderProps) {
                     <SelectContent>
                       {subscriptions.map((sub) => (
                         <SelectItem key={sub.id} value={sub.id}>
-                          {sub.icon} {sub.name}
+                          <div className="flex items-center gap-2">
+                            <BrandIcon name={sub.name} icon={sub.icon} size="sm" />
+                            <span>{sub.name}</span>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>

@@ -28,47 +28,60 @@ export function CostSummaryCard({
   suffix,
 }: CostSummaryCardProps) {
   return (
-    <div className="bg-card rounded-2xl border border-border p-6 hover:shadow-sm transition-all duration-200">
-      <div className="flex items-start justify-between mb-5">
-        <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
-        {icon && (
-          <div className="text-muted-foreground bg-accent rounded-full p-2">
-            {icon}
-          </div>
-        )}
-      </div>
+    <div className="group relative bg-card rounded-2xl border border-border p-6 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-primary/20 hover:-translate-y-0.5 overflow-hidden">
+      {/* Subtle gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-      <div className="space-y-2">
-        <p className="text-4xl font-bold text-foreground tracking-tight">
-          {isCurrency ? formatKRW(amount) : `${amount.toLocaleString('ko-KR')}${suffix || ''}`}
-        </p>
+      <div className="relative">
+        <div className="flex items-start justify-between mb-4">
+          <h3 className="text-[13px] font-semibold text-muted-foreground tracking-wide">
+            {title}
+          </h3>
+          {icon && (
+            <div className="text-primary/60 bg-primary/[0.08] rounded-xl p-2 group-hover:bg-primary/[0.12] transition-colors duration-200">
+              {icon}
+            </div>
+          )}
+        </div>
 
-        {subtitle && (
-          <p className="text-sm text-muted-foreground font-medium">
-            {subtitle}
+        <div className="space-y-1.5">
+          <p className="text-[32px] leading-tight font-extrabold text-foreground tracking-tight">
+            {isCurrency
+              ? formatKRW(amount)
+              : `${amount.toLocaleString('ko-KR')}${suffix || ''}`}
           </p>
-        )}
 
-        {change && (
-          <div className="flex items-center gap-1.5 text-sm mt-3">
-            {change.isPositive ? (
-              <TrendingUp className="w-4 h-4 text-green-600" />
-            ) : (
-              <TrendingDown className="w-4 h-4 text-destructive" />
-            )}
-            <span
-              className={
-                change.isPositive
-                  ? 'text-green-600 font-semibold'
-                  : 'text-destructive font-semibold'
-              }
-            >
-              {change.isPositive ? '+' : ''}
-              {formatKRW(change.value)}
-            </span>
-            <span className="text-muted-foreground">지난달 대비</span>
-          </div>
-        )}
+          {subtitle && (
+            <p className="text-[13px] text-muted-foreground font-medium">
+              {subtitle}
+            </p>
+          )}
+
+          {change && (
+            <div className="flex items-center gap-1.5 text-sm pt-2">
+              <div
+                className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${
+                  change.isPositive
+                    ? 'bg-[#E8F5E9] text-[#1B8A3A] dark:bg-[#1B8A3A]/20 dark:text-[#4ADE80]'
+                    : 'bg-destructive/10 text-destructive'
+                }`}
+              >
+                {change.isPositive ? (
+                  <TrendingUp className="w-3 h-3" />
+                ) : (
+                  <TrendingDown className="w-3 h-3" />
+                )}
+                <span>
+                  {change.isPositive ? '+' : ''}
+                  {formatKRW(change.value)}
+                </span>
+              </div>
+              <span className="text-xs text-muted-foreground font-medium">
+                지난달 대비
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

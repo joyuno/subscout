@@ -17,22 +17,33 @@ export function DNARadarChart() {
   }
 
   return (
-    <div className="rounded-xl border bg-card p-6">
-      <h3 className="text-lg font-semibold mb-4">구독 분포 차트</h3>
+    <div className="rounded-2xl border border-border bg-card p-6">
+      <h3 className="text-sm font-bold text-foreground mb-4">구독 분포 차트</h3>
       <ResponsiveContainer width="100%" height={400}>
         <RadarChart data={radarData}>
-          <PolarGrid stroke="#e5e7eb" />
+          <PolarGrid
+            stroke="var(--color-border, hsl(var(--border)))"
+            strokeOpacity={0.6}
+          />
           <PolarAngleAxis
             dataKey="category"
-            tick={{ fill: '#6b7280', fontSize: 12 }}
+            tick={{ fill: 'var(--color-muted-foreground, #6b7280)', fontSize: 12, fontWeight: 600 }}
           />
-          <PolarRadiusAxis angle={90} domain={[0, 'auto']} tick={{ fill: '#6b7280', fontSize: 10 }} />
+          <PolarRadiusAxis
+            angle={90}
+            domain={[0, 'auto']}
+            tick={{ fill: 'var(--color-muted-foreground, #6b7280)', fontSize: 10 }}
+            axisLine={false}
+          />
           <Radar
             name="지출액"
             dataKey="spend"
-            stroke="#3b82f6"
-            fill="#3b82f6"
-            fillOpacity={0.6}
+            stroke="#3182F6"
+            fill="#3182F6"
+            fillOpacity={0.15}
+            strokeWidth={2.5}
+            dot={{ fill: '#3182F6', r: 4, strokeWidth: 0 }}
+            activeDot={{ r: 6, strokeWidth: 2, stroke: '#3182F6', fill: 'var(--color-card, white)' }}
           />
         </RadarChart>
       </ResponsiveContainer>

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import type { ROIAnalysis, RecommendAction } from '@/lib/types/usage';
 import { formatKRW } from '@/lib/utils/formatCurrency';
 import { AlertCircle, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface RecommendationCardProps {
   analyses: ROIAnalysis[];
@@ -93,7 +94,7 @@ export function RecommendationCard({ analyses }: RecommendationCardProps) {
                   }}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="text-2xl">{analysis.icon}</span>
+                    <BrandIcon name={analysis.subscriptionName} icon={analysis.icon} size="sm" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="font-semibold">

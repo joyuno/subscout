@@ -10,6 +10,7 @@ import { useUsageStore } from '@/stores/usageStore';
 import type { Subscription } from '@/lib/types/subscription';
 import { ExternalLink, Star } from 'lucide-react';
 import Link from 'next/link';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 
 interface UsageInputFormProps {
   subscriptions: Subscription[];
@@ -126,7 +127,7 @@ export function UsageInputForm({
                     key={sub.id}
                     className="flex items-center gap-3 rounded-lg border p-3"
                   >
-                    <span className="text-2xl">{sub.icon}</span>
+                    <BrandIcon name={sub.name} icon={sub.icon} size="sm" />
                     <div className="flex-1">
                       <p className="font-medium">{sub.name}</p>
                       {existing && (
@@ -165,7 +166,7 @@ export function UsageInputForm({
                   className="rounded-lg border p-3"
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">{sub.icon}</span>
+                    <BrandIcon name={sub.name} icon={sub.icon} size="sm" />
                     <p className="font-medium">{sub.name}</p>
                   </div>
                   <div className="grid grid-cols-5 gap-2">

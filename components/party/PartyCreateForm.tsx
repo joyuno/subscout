@@ -15,6 +15,7 @@ import {
 import { usePartyStore } from '@/stores/partyStore';
 import { SERVICE_PRESETS } from '@/lib/constants/servicePresets';
 import { formatKRW } from '@/lib/utils/formatCurrency';
+import { BrandIcon } from '@/components/subscription/BrandIcon';
 import { UserPlus, Sparkles } from 'lucide-react';
 
 interface PartyCreateFormProps {
@@ -94,7 +95,7 @@ export function PartyCreateForm({ onSuccess }: PartyCreateFormProps) {
               {servicesWithFamilyPlans.map((preset) => (
                 <SelectItem key={preset.name} value={preset.name}>
                   <div className="flex items-center gap-2">
-                    <span>{preset.icon}</span>
+                    <BrandIcon name={preset.name} icon={preset.icon} size="sm" />
                     <span>{preset.name}</span>
                   </div>
                 </SelectItem>
