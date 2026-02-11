@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { getServicePreset } from '@/lib/constants/servicePresets';
 
 interface BrandIconProps {
@@ -11,6 +12,8 @@ interface BrandIconProps {
 export function BrandIcon({ name, icon, size = 'md' }: BrandIconProps) {
   const preset = getServicePreset(name);
   const brandColor = preset?.brandColor;
+  const domain = preset?.domain;
+  const [imgError, setImgError] = useState(false);
 
   const sizeClasses = {
     sm: 'w-8 h-8 text-sm',
@@ -18,7 +21,22 @@ export function BrandIcon({ name, icon, size = 'md' }: BrandIconProps) {
     lg: 'w-16 h-16 text-3xl',
   };
 
-  // If we have a brand color, show colored initial
+  // If we have a domain and the image hasn't errored, show the favicon
+  if (domain && !imgError) {
+    const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+    return (
+      <div className={`${sizeClasses[size]} rounded-2xl flex items-center justify-center shrink-0 shadow-sm overflow-hidden bg-white`}>
+        <img
+          src={faviconUrl}
+          alt={`${name} logo`}
+          className="w-full h-full object-contain p-1"
+          onError={() => setImgError(true)}
+        />
+      </div>
+    );
+  }
+
+  // If we have a brand color, show colored initial (fallback for failed images)
   if (brandColor) {
     const initial = name.charAt(0).toUpperCase();
     return (

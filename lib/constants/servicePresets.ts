@@ -22,6 +22,7 @@ export interface ServicePreset {
   note?: string;
   cancellationUrl?: string;
   brandColor?: string;
+  domain?: string;
 }
 
 export const SERVICE_PRESETS: Record<string, ServicePreset> = {
@@ -44,6 +45,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '프리미엄 4인 공유 시 인당 4,250원',
     cancellationUrl: 'https://www.netflix.com/cancelplan',
     brandColor: '#E50914',
+    domain: 'netflix.com',
   },
   '디즈니+': {
     name: '디즈니+',
@@ -63,6 +65,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '프리미엄 4인 공유 시 인당 3,475원',
     cancellationUrl: 'https://www.disneyplus.com/account',
     brandColor: '#113CCF',
+    domain: 'disneyplus.com',
   },
   웨이브: {
     name: '웨이브',
@@ -82,6 +85,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '프리미엄 동시접속 4인',
     cancellationUrl: 'https://www.wavve.com/my/membership',
     brandColor: '#1DB4A4',
+    domain: 'wavve.com',
   },
   티빙: {
     name: '티빙',
@@ -101,6 +105,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '프리미엄 동시접속 4인',
     cancellationUrl: 'https://www.tving.com/my',
     brandColor: '#FF0558',
+    domain: 'tving.com',
   },
   쿠팡플레이: {
     name: '쿠팡플레이',
@@ -111,6 +116,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '쿠팡 로켓와우 멤버십에 포함',
     cancellationUrl: 'https://www.coupang.com/np/coupangPlay',
     brandColor: '#E6282E',
+    domain: 'coupangplay.com',
   },
   왓챠: {
     name: '왓챠',
@@ -129,6 +135,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '프리미엄 동시접속 4인',
     cancellationUrl: 'https://watcha.com/settings/account',
     brandColor: '#FF0558',
+    domain: 'watcha.com',
   },
   'Apple TV+': {
     name: 'Apple TV+',
@@ -147,6 +154,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'Apple One 번들 가능',
     cancellationUrl: 'https://support.apple.com/ko-kr/111771',
     brandColor: '#000000',
+    domain: 'tv.apple.com',
   },
   'Amazon Prime Video': {
     name: 'Amazon Prime Video',
@@ -159,6 +167,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     familyPlan: null,
     cancellationUrl: 'https://www.amazon.co.kr/gp/primecentral',
     brandColor: '#00A8E1',
+    domain: 'primevideo.com',
   },
   유튜브프리미엄: {
     name: '유튜브 프리미엄',
@@ -177,6 +186,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'YouTube Music 포함',
     cancellationUrl: 'https://www.youtube.com/paid_memberships',
     brandColor: '#FF0000',
+    domain: 'youtube.com',
   },
 
   /* ── 음악 ────────────────────────────────────────────────── */
@@ -197,6 +207,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '패밀리 6인 공유 시 인당 약 2,817원',
     cancellationUrl: 'https://www.spotify.com/account/subscription/',
     brandColor: '#1DB954',
+    domain: 'spotify.com',
   },
   'Apple Music': {
     name: 'Apple Music',
@@ -216,6 +227,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'Apple One 번들 가능',
     cancellationUrl: 'https://support.apple.com/ko-kr/108380',
     brandColor: '#FA2D48',
+    domain: 'music.apple.com',
   },
   '지니뮤직': {
     name: '지니뮤직',
@@ -229,6 +241,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '통신사 제휴 할인 가능',
     cancellationUrl: 'https://www.genie.co.kr/myInfo/payment',
     brandColor: '#3B82F6',
+    domain: 'genie.co.kr',
   },
   '멜론': {
     name: '멜론',
@@ -242,6 +255,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '카카오 계정 연동',
     cancellationUrl: 'https://www.melon.com/mymusic/ticket/mymusicticket_inform.htm',
     brandColor: '#00CD3C',
+    domain: 'melon.com',
   },
   'FLO': {
     name: 'FLO',
@@ -255,6 +269,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'SKT 제휴 할인 가능',
     cancellationUrl: 'https://www.music-flo.com/my/pass',
     brandColor: '#4CEDB0',
+    domain: 'music-flo.com',
   },
   'YouTube Music': {
     name: 'YouTube Music',
@@ -270,6 +285,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'YouTube 프리미엄에 포함',
     cancellationUrl: 'https://www.youtube.com/paid_memberships',
     brandColor: '#FF0000',
+    domain: 'music.youtube.com',
   },
 
   /* ── 쇼핑/배달 ──────────────────────────────────────────── */
@@ -282,6 +298,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '쿠팡플레이, 쿠팡이츠 무료배달 포함',
     cancellationUrl: 'https://www.coupang.com/np/coupangPlay',
     brandColor: '#E6282E',
+    domain: 'coupang.com',
   },
   '네이버 플러스 멤버십': {
     name: '네이버 플러스 멤버십',
@@ -292,6 +309,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '네이버페이 적립, 티빙/지니뮤직 혜택 선택',
     cancellationUrl: 'https://nid.naver.com/membership/my',
     brandColor: '#03C75A',
+    domain: 'naver.com',
   },
   '배달의민족 배민클럽': {
     name: '배달의민족 배민클럽',
@@ -302,6 +320,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '무료배달 및 할인 혜택',
     cancellationUrl: 'https://member.baemin.com',
     brandColor: '#2AC1BC',
+    domain: 'baemin.com',
   },
   'SSG 멤버십': {
     name: 'SSG 멤버십',
@@ -312,6 +331,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '이마트/SSG 할인 혜택',
     cancellationUrl: 'https://m.ssg.com/myssg/main.ssg',
     brandColor: '#FF5A2E',
+    domain: 'ssg.com',
   },
   '마켓컬리 컬리패스': {
     name: '마켓컬리 컬리패스',
@@ -322,6 +342,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '무료배송 및 적립 혜택',
     cancellationUrl: 'https://www.kurly.com/mypage',
     brandColor: '#5F0080',
+    domain: 'kurly.com',
   },
 
   /* ── 생산성 ──────────────────────────────────────────────── */
@@ -342,6 +363,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'OneDrive 1TB 포함',
     cancellationUrl: 'https://account.microsoft.com/services',
     brandColor: '#D83B01',
+    domain: 'microsoft.com',
   },
   노션: {
     name: '노션',
@@ -355,6 +377,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '무료 플랜도 개인용으로 충분',
     cancellationUrl: 'https://www.notion.so/my-account/plans',
     brandColor: '#000000',
+    domain: 'notion.so',
   },
   ChatGPT: {
     name: 'ChatGPT',
@@ -368,6 +391,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'GPT-4o 등 고성능 모델 사용',
     cancellationUrl: 'https://chat.openai.com/settings/subscription',
     brandColor: '#10A37F',
+    domain: 'openai.com',
   },
   Canva: {
     name: 'Canva',
@@ -386,6 +410,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '디자인 템플릿 및 AI 기능',
     cancellationUrl: 'https://www.canva.com/settings/billing',
     brandColor: '#00C4CC',
+    domain: 'canva.com',
   },
   피그마: {
     name: '피그마',
@@ -399,6 +424,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '무료 플랜 3프로젝트 제한',
     cancellationUrl: 'https://www.figma.com/settings',
     brandColor: '#F24E1E',
+    domain: 'figma.com',
   },
 
   /* ── 클라우드 ────────────────────────────────────────────── */
@@ -422,6 +448,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'Apple 기기 백업 필수',
     cancellationUrl: 'https://support.apple.com/ko-kr/108052',
     brandColor: '#3693F3',
+    domain: 'icloud.com',
   },
   'Google One': {
     name: 'Google One',
@@ -441,6 +468,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'Google 포토/Gmail/드라이브 통합',
     cancellationUrl: 'https://one.google.com/settings',
     brandColor: '#4285F4',
+    domain: 'one.google.com',
   },
   Dropbox: {
     name: 'Dropbox',
@@ -458,6 +486,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     },
     cancellationUrl: 'https://www.dropbox.com/account/plan',
     brandColor: '#0061FF',
+    domain: 'dropbox.com',
   },
 
   /* ── 게임 ────────────────────────────────────────────────── */
@@ -479,6 +508,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '패밀리 8인까지 공유 가능',
     cancellationUrl: 'https://ec.nintendo.com/my/membership',
     brandColor: '#E60012',
+    domain: 'nintendo.com',
   },
   'PlayStation Plus': {
     name: 'PlayStation Plus',
@@ -493,6 +523,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     familyPlan: null,
     cancellationUrl: 'https://store.playstation.com/ko-kr/latest',
     brandColor: '#003791',
+    domain: 'playstation.com',
   },
   'Xbox Game Pass': {
     name: 'Xbox Game Pass',
@@ -507,6 +538,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'PC + Console 통합',
     cancellationUrl: 'https://account.microsoft.com/services',
     brandColor: '#107C10',
+    domain: 'xbox.com',
   },
 
   /* ── 독서 ────────────────────────────────────────────────── */
@@ -522,6 +554,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '전자책 무제한 읽기',
     cancellationUrl: 'https://www.millie.co.kr/v3/mypage/subscription',
     brandColor: '#FFCE00',
+    domain: 'millie.co.kr',
   },
   리디셀렉트: {
     name: '리디셀렉트',
@@ -532,6 +565,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '전자책/웹소설/만화 구독',
     cancellationUrl: 'https://ridibooks.com/account/membership',
     brandColor: '#1F8CE6',
+    domain: 'ridibooks.com',
   },
   '윌라': {
     name: '윌라',
@@ -545,6 +579,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '오디오북 전문',
     cancellationUrl: 'https://www.welaaa.com/mypage',
     brandColor: '#6C63FF',
+    domain: 'welaaa.com',
   },
   'YES24 북클럽': {
     name: 'YES24 북클럽',
@@ -555,6 +590,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '전자책 무제한 구독',
     cancellationUrl: 'https://bookclub.yes24.com/MyRoom',
     brandColor: '#D51921',
+    domain: 'yes24.com',
   },
   'Kindle Unlimited': {
     name: 'Kindle Unlimited',
@@ -565,6 +601,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: 'Amazon 전자책 구독',
     cancellationUrl: 'https://www.amazon.co.kr/kindle-dbs/hz/subscribe/ku',
     brandColor: '#FF9900',
+    domain: 'amazon.com',
   },
 };
 
