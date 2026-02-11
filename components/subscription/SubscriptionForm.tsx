@@ -184,28 +184,20 @@ export function SubscriptionForm({
 
       {activeTab === 'custom' && (
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">서비스 이름 *</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="넷플릭스"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="icon">아이콘</Label>
-              <Input
-                id="icon"
-                value={icon}
-                onChange={(e) => setIcon(e.target.value)}
-                placeholder="🎬"
-                maxLength={2}
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="name">서비스 이름 *</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (!selectedPreset && e.target.value) {
+                  setIcon(e.target.value.charAt(0).toUpperCase());
+                }
+              }}
+              placeholder="넷플릭스"
+              required
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">

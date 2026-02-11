@@ -31,7 +31,7 @@ export interface Subscription {
 }
 
 export const CATEGORY_LABELS: Record<SubscriptionCategory, string> = {
-  video: '영상 스트리밍',
+  video: 'OTT',
   music: '음악',
   cloud: '클라우드',
   productivity: '생산성',

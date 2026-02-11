@@ -85,7 +85,7 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     note: '프리미엄 동시접속 4인',
     cancellationUrl: 'https://www.wavve.com/my/membership',
     brandColor: '#1DB4A4',
-    domain: 'wavve.com',
+    domain: 'www.wavve.com',
   },
   티빙: {
     name: '티빙',
@@ -156,8 +156,8 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     brandColor: '#000000',
     domain: 'tv.apple.com',
   },
-  'Amazon Prime Video': {
-    name: 'Amazon Prime Video',
+  'Amazon Prime': {
+    name: 'Amazon Prime',
     category: 'video',
     icon: '📦',
     plans: [
@@ -300,8 +300,8 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     brandColor: '#E6282E',
     domain: 'coupang.com',
   },
-  '네이버 플러스 멤버십': {
-    name: '네이버 플러스 멤버십',
+  '네이버 플러스': {
+    name: '네이버 플러스',
     category: 'shopping',
     icon: '💚',
     plans: [{ name: '월간', price: 4900, cycle: 'monthly' }],
@@ -311,8 +311,8 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     brandColor: '#03C75A',
     domain: 'naver.com',
   },
-  '배달의민족 배민클럽': {
-    name: '배달의민족 배민클럽',
+  '배민클럽': {
+    name: '배민클럽',
     category: 'shopping',
     icon: '🍔',
     plans: [{ name: '월간', price: 4990, cycle: 'monthly' }],
@@ -333,8 +333,8 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     brandColor: '#FF5A2E',
     domain: 'ssg.com',
   },
-  '마켓컬리 컬리패스': {
-    name: '마켓컬리 컬리패스',
+  '컬리패스': {
+    name: '컬리패스',
     category: 'shopping',
     icon: '🥬',
     plans: [{ name: '월간', price: 4900, cycle: 'monthly' }],
@@ -346,8 +346,8 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
   },
 
   /* ── 생산성 ──────────────────────────────────────────────── */
-  'Microsoft 365': {
-    name: 'Microsoft 365',
+  'MS 365': {
+    name: 'MS 365',
     category: 'productivity',
     icon: '💼',
     plans: [
@@ -490,8 +490,8 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
   },
 
   /* ── 게임 ────────────────────────────────────────────────── */
-  'Nintendo Switch Online': {
-    name: 'Nintendo Switch Online',
+  'Nintendo Online': {
+    name: 'Nintendo Online',
     category: 'gaming',
     icon: '🎮',
     plans: [
@@ -510,8 +510,8 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     brandColor: '#E60012',
     domain: 'nintendo.com',
   },
-  'PlayStation Plus': {
-    name: 'PlayStation Plus',
+  'PS Plus': {
+    name: 'PS Plus',
     category: 'gaming',
     icon: '🕹️',
     plans: [
@@ -525,8 +525,8 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     brandColor: '#003791',
     domain: 'playstation.com',
   },
-  'Xbox Game Pass': {
-    name: 'Xbox Game Pass',
+  'Xbox GP': {
+    name: 'Xbox GP',
     category: 'gaming',
     icon: '🟩',
     plans: [
@@ -592,8 +592,8 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     brandColor: '#D51921',
     domain: 'yes24.com',
   },
-  'Kindle Unlimited': {
-    name: 'Kindle Unlimited',
+  '킨들 언리미티드': {
+    name: '킨들 언리미티드',
     category: 'reading',
     icon: '📱',
     plans: [{ name: '기본', price: 11900, cycle: 'monthly' }],
