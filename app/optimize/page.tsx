@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo, useState, useEffect } from 'react';
 import { useSubscriptionStore } from '@/stores/subscriptionStore';
 import { findSharingOpportunities } from '@/lib/calculations/sharingOptimize';
 import { analyzeBundleOptimization } from '@/lib/calculations/bundleOptimize';
@@ -14,48 +15,82 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingDown, Users, Package, Lightbulb } from 'lucide-react';
 
 export default function OptimizePage() {
-  const subscriptions = useSubscriptionStore((state) =>
-    state.getActiveSubscriptions(),
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const allSubscriptions = useSubscriptionStore((state) => state.subscriptions);
+
+  const subscriptions = useMemo(
+    () => allSubscriptions.filter((s) => s.status === 'active' || s.status === 'trial'),
+    [allSubscriptions],
   );
 
-  const sharingOpportunities = findSharingOpportunities(subscriptions);
-  const bundleOptimizations = analyzeBundleOptimization(subscriptions);
+  const sharingOpportunities = useMemo(
+    () => findSharingOpportunities(subscriptions),
+    [subscriptions],
+  );
 
-  const totalSharingSavings = sharingOpportunities.reduce(
-    (sum, opp) => sum + opp.savingsPerPerson,
-    0,
+  const bundleOptimizations = useMemo(
+    () => analyzeBundleOptimization(subscriptions),
+    [subscriptions],
   );
-  const totalBundleSavings = bundleOptimizations.reduce(
-    (sum, opt) => sum + opt.monthlySavings,
-    0,
+
+  const totalSharingSavings = useMemo(
+    () => sharingOpportunities.reduce((sum, opp) => sum + opp.savingsPerPerson, 0),
+    [sharingOpportunities],
   );
+
+  const totalBundleSavings = useMemo(
+    () => bundleOptimizations.reduce((sum, opt) => sum + opt.monthlySavings, 0),
+    [bundleOptimizations],
+  );
+
+  if (!mounted) {
+    return (
+      <div className="container max-w-6xl mx-auto p-6">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-3 flex items-center gap-3">
+            <TrendingDown className="h-9 w-9" />
+            구독 최적화
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            구독료를 절약할 수 있는 최적의 방법을 찾아드려요
+          </p>
+        </div>
+        <div className="animate-pulse space-y-4">
+          <div className="h-32 bg-muted rounded-2xl" />
+          <div className="h-64 bg-muted rounded-2xl" />
+        </div>
+      </div>
+    );
+  }
 
   // Empty state
   if (subscriptions.length === 0) {
     return (
       <div className="container max-w-6xl mx-auto p-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-            <TrendingDown className="h-8 w-8" />
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-3 flex items-center gap-3">
+            <TrendingDown className="h-9 w-9" />
             구독 최적화
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-lg">
             구독료를 절약할 수 있는 최적의 방법을 찾아드려요
           </p>
         </div>
 
-        <Card>
-          <CardContent className="py-16 text-center">
-            <Lightbulb className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold mb-2">
+        <Card className="rounded-2xl">
+          <CardContent className="py-20 text-center">
+            <Lightbulb className="h-20 w-20 mx-auto text-muted-foreground/30 mb-6" />
+            <h3 className="text-2xl font-bold mb-3">
               구독을 먼저 추가해주세요
             </h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-muted-foreground mb-8 text-lg">
               구독 서비스를 등록하면 절약 기회를 자동으로 찾아드립니다
             </p>
             <a
               href="/subscriptions"
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6"
+              className="inline-flex items-center justify-center rounded-2xl text-base font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg px-8 py-4"
             >
               구독 추가하러 가기
             </a>
@@ -66,14 +101,14 @@ export default function OptimizePage() {
   }
 
   return (
-    <div className="container max-w-6xl mx-auto p-6 space-y-6">
+    <div className="container max-w-6xl mx-auto p-6 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-          <TrendingDown className="h-8 w-8" />
+        <h1 className="text-4xl font-bold mb-3 flex items-center gap-3">
+          <TrendingDown className="h-9 w-9" />
           구독 최적화
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-lg">
           공유와 번들로 구독료를 절약하는 최적의 방법을 찾아드려요
         </p>
       </div>
@@ -86,21 +121,27 @@ export default function OptimizePage() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="sharing" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="sharing" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-2 rounded-xl p-1.5 bg-accent">
+          <TabsTrigger
+            value="sharing"
+            className="flex items-center gap-2 rounded-lg font-semibold"
+          >
             <Users className="h-4 w-4" />
-            공유 최적화
+            <span>공유 최적화</span>
             {sharingOpportunities.length > 0 && (
-              <span className="ml-1 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
+              <span className="ml-1 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground font-bold">
                 {sharingOpportunities.length}
               </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="bundle" className="flex items-center gap-2">
+          <TabsTrigger
+            value="bundle"
+            className="flex items-center gap-2 rounded-lg font-semibold"
+          >
             <Package className="h-4 w-4" />
-            번들 최적화 (묶음 찬스)
+            <span>번들 최적화</span>
             {bundleOptimizations.length > 0 && (
-              <span className="ml-1 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
+              <span className="ml-1 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground font-bold">
                 {bundleOptimizations.length}
               </span>
             )}
@@ -110,13 +151,13 @@ export default function OptimizePage() {
         {/* Sharing Optimization Tab */}
         <TabsContent value="sharing" className="space-y-6">
           {sharingOpportunities.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <Users className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <p className="text-muted-foreground">
+            <Card className="rounded-2xl">
+              <CardContent className="py-16 text-center">
+                <Users className="h-16 w-16 mx-auto text-muted-foreground/30 mb-4" />
+                <p className="text-muted-foreground text-lg font-medium">
                   현재 공유 가능한 구독이 없어요
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground mt-2">
                   가족 요금제가 있는 서비스를 구독하면 공유 기회를 찾아드릴게요
                 </p>
               </CardContent>
@@ -167,17 +208,17 @@ export default function OptimizePage() {
 
       {/* CTA Footer */}
       {(sharingOpportunities.length > 0 || bundleOptimizations.length > 0) && (
-        <Card className="border-2 border-primary/20 bg-primary/5">
-          <CardContent className="p-6 text-center">
-            <h3 className="text-lg font-semibold mb-2">
+        <Card className="border-2 border-primary/20 bg-primary/5 rounded-2xl">
+          <CardContent className="p-8 text-center">
+            <h3 className="text-2xl font-bold mb-3">
               지금 바로 절약을 시작하세요!
             </h3>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-base text-muted-foreground mb-6">
               공유 파티를 만들거나 번들 멤버십으로 전환해보세요
             </p>
             <a
               href="/party"
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6"
+              className="inline-flex items-center justify-center rounded-2xl text-base font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg px-8 py-4"
             >
               공유 파티 시작하기
             </a>
