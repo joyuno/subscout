@@ -1,13 +1,14 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useSubscriptionStore } from '@/stores/subscriptionStore';
 import { analyzeDNA } from '@/lib/calculations/subscriptionDNA';
 import { formatKRW } from '@/lib/utils/formatCurrency';
 import { CATEGORY_LABELS, CATEGORY_COLORS, type SubscriptionCategory } from '@/lib/types/subscription';
 import { Button } from '@/components/ui/button';
 import { TossEmoji } from '@/components/ui/TossEmoji';
-import { Share2 } from 'lucide-react';
+import { DNAShareCard } from './DNAShareCard';
+import { Share2, Image } from 'lucide-react';
 
 export function SubscriptionDNA() {
   const subscriptions = useSubscriptionStore((s) => s.subscriptions);
@@ -48,10 +49,16 @@ export function SubscriptionDNA() {
       .sort((a, b) => b.spend - a.spend);
   }, [activeSubscriptions, totalCost]);
 
+  const [showShareCard, setShowShareCard] = useState(false);
+
   const handleShare = () => {
     const text = `나의 구독 DNA는 [${dnaProfile.emoji} ${dnaProfile.name}] 타입!\n월 ${formatKRW(totalCost)}를 구독에 사용 중 🔍 SubScout에서 확인`;
     navigator.clipboard.writeText(text);
     alert('클립보드에 복사되었습니다!');
+  };
+
+  const handleShareCard = () => {
+    setShowShareCard(true);
   };
 
   if (activeSubscriptions.length === 0) {
@@ -128,11 +135,28 @@ export function SubscriptionDNA() {
         <p className="text-sm text-foreground font-medium">{dnaProfile.tip}</p>
       </div>
 
-      {/* Share Button */}
-      <Button onClick={handleShare} className="w-full rounded-xl" variant="outline" size="lg">
-        <Share2 className="mr-2 h-4 w-4" />
-        공유하기
-      </Button>
+      {/* Share Buttons */}
+      <div className="flex gap-3">
+        <Button onClick={handleShare} className="flex-1 rounded-xl" variant="outline" size="lg">
+          <Share2 className="mr-2 h-4 w-4" />
+          텍스트 복사
+        </Button>
+        <Button onClick={handleShareCard} className="flex-1 rounded-xl" size="lg">
+          <Image className="mr-2 h-4 w-4" />
+          카드 이미지 생성
+        </Button>
+      </div>
+
+      {/* Share Card Modal */}
+      {showShareCard && (
+        <DNAShareCard
+          dnaProfile={dnaProfile}
+          totalCost={totalCost}
+          subscriptionCount={activeSubscriptions.length}
+          categoryBreakdown={categoryBreakdown}
+          onClose={() => setShowShareCard(false)}
+        />
+      )}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import {
   PartyCard,
   InviteLinkShare,
   PartyMemberList,
+  PublicPartyBoard,
 } from '@/components/party';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,7 +20,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Plus, LogIn, PartyPopper } from 'lucide-react';
+import { Users, Plus, LogIn, PartyPopper, Megaphone } from 'lucide-react';
 
 export default function PartyPage() {
   const parties = usePartyStore((state) => state.parties);
@@ -110,9 +111,13 @@ export default function PartyPage() {
 
       {/* Main Content */}
       <Tabs defaultValue="my-parties" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 rounded-xl p-1.5 bg-accent">
+        <TabsList className="grid w-full grid-cols-3 rounded-xl p-1.5 bg-accent">
           <TabsTrigger value="my-parties" className="rounded-lg font-semibold">
             내 파티 ({activeParties.length})
+          </TabsTrigger>
+          <TabsTrigger value="public" className="rounded-lg font-semibold">
+            <Megaphone className="mr-1.5 h-3.5 w-3.5" />
+            공개 모집
           </TabsTrigger>
           <TabsTrigger value="join" className="rounded-lg font-semibold">
             파티 참가하기
@@ -172,6 +177,11 @@ export default function PartyPage() {
               ))}
             </div>
           )}
+        </TabsContent>
+
+        {/* Public Board Tab */}
+        <TabsContent value="public" className="space-y-6">
+          <PublicPartyBoard />
         </TabsContent>
 
         {/* Join Party Tab */}

@@ -1,12 +1,15 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useSubscriptionStore } from '@/stores/subscriptionStore';
 import { formatKRW } from '@/lib/utils/formatCurrency';
 import { BrandIcon } from '@/components/subscription/BrandIcon';
 import { TossEmoji } from '@/components/ui/TossEmoji';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { UserPlus, Copy, Check, Trophy, Crown } from 'lucide-react';
 
-interface Badge {
+interface ChallengeBadge {
   id: string;
   name: string;
   emoji: string;
@@ -14,15 +17,39 @@ interface Badge {
   color: string;
 }
 
-const BADGES: Badge[] = [
+const BADGES: ChallengeBadge[] = [
   { id: 'bronze', name: '브론즈', emoji: '🥉', threshold: 10000, color: '#cd7f32' },
   { id: 'silver', name: '실버', emoji: '🥈', threshold: 30000, color: '#c0c0c0' },
   { id: 'gold', name: '골드', emoji: '🥇', threshold: 50000, color: '#ffd700' },
   { id: 'diamond', name: '다이아', emoji: '💎', threshold: 100000, color: '#b9f2ff' },
 ];
 
+interface FriendRanking {
+  id: string;
+  nickname: string;
+  savings: number;
+  badge: ChallengeBadge | null;
+  isMe: boolean;
+}
+
+function getBadgeForSavings(savings: number): ChallengeBadge | null {
+  for (let i = BADGES.length - 1; i >= 0; i--) {
+    if (savings >= BADGES[i].threshold) {
+      return BADGES[i];
+    }
+  }
+  return null;
+}
+
+const DUMMY_FRIENDS: Omit<FriendRanking, 'isMe'>[] = [
+  { id: 'friend-1', nickname: '절약왕 지민', savings: 85000, badge: getBadgeForSavings(85000) },
+  { id: 'friend-2', nickname: '미니멀 수현', savings: 42000, badge: getBadgeForSavings(42000) },
+  { id: 'friend-3', nickname: '스마트 도윤', savings: 15000, badge: getBadgeForSavings(15000) },
+];
+
 export function ChallengeTracker() {
   const cancelledSubscriptions = useSubscriptionStore((s) => s.cancelledSubscriptions);
+  const [inviteCopied, setInviteCopied] = useState(false);
 
   const totalSavings = useMemo(() => {
     return cancelledSubscriptions.reduce((sum, sub) => sum + sub.monthlyPrice, 0);
@@ -53,6 +80,33 @@ export function ChallengeTracker() {
     const current = totalSavings - previousThreshold;
     return Math.min((current / range) * 100, 100);
   }, [totalSavings, currentBadge, nextBadge]);
+
+  // Build ranking with me + friends
+  const rankings: FriendRanking[] = useMemo(() => {
+    const me: FriendRanking = {
+      id: 'me',
+      nickname: '나',
+      savings: totalSavings,
+      badge: currentBadge,
+      isMe: true,
+    };
+
+    const all: FriendRanking[] = [
+      me,
+      ...DUMMY_FRIENDS.map((f) => ({ ...f, isMe: false })),
+    ];
+
+    return all.sort((a, b) => b.savings - a.savings);
+  }, [totalSavings, currentBadge]);
+
+  const handleInviteCopy = useCallback(() => {
+    const inviteLink = `${typeof window !== 'undefined' ? window.location.origin : 'https://subscout.app'}/invite?ref=challenge`;
+    navigator.clipboard.writeText(
+      `SubScout 절약 챌린지에 참여하세요! 함께 구독을 정리하고 절약 대결해봐요.\n${inviteLink}`,
+    );
+    setInviteCopied(true);
+    setTimeout(() => setInviteCopied(false), 2000);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -103,6 +157,128 @@ export function ChallengeTracker() {
             모든 배지를 획득했습니다! 최고예요!
           </div>
         )}
+      </div>
+
+      {/* Friend Comparison Section */}
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-primary" />
+            <h4 className="text-base font-bold text-foreground">친구와 비교</h4>
+          </div>
+          <Badge variant="secondary" className="text-[11px] font-semibold">
+            절약 랭킹
+          </Badge>
+        </div>
+
+        <div className="space-y-2.5">
+          {rankings.map((user, idx) => {
+            const rank = idx + 1;
+            const isFirst = rank === 1;
+
+            return (
+              <div
+                key={user.id}
+                className={`flex items-center gap-3 p-3.5 rounded-xl border transition-all duration-300 ${
+                  user.isMe
+                    ? 'bg-primary/[0.06] border-primary/20 shadow-sm'
+                    : isFirst
+                      ? 'bg-[#FFF8E1] dark:bg-[#ffd700]/[0.08] border-[#ffd700]/30'
+                      : 'bg-card border-border'
+                }`}
+              >
+                {/* Rank */}
+                <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0">
+                  {isFirst ? (
+                    <Crown className="h-5 w-5 text-[#ffd700]" />
+                  ) : (
+                    <span
+                      className={`text-sm font-extrabold ${
+                        user.isMe ? 'text-primary' : 'text-muted-foreground'
+                      }`}
+                    >
+                      {rank}
+                    </span>
+                  )}
+                </div>
+
+                {/* Avatar placeholder */}
+                <div
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
+                    user.isMe
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground'
+                  }`}
+                >
+                  {user.nickname.charAt(0)}
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`text-sm font-bold truncate ${
+                        user.isMe ? 'text-primary' : 'text-foreground'
+                      }`}
+                    >
+                      {user.nickname}
+                    </span>
+                    {user.isMe && (
+                      <Badge className="bg-primary/10 text-primary text-[10px] font-bold border-0">
+                        나
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    {user.badge && (
+                      <span className="text-xs">{user.badge.emoji}</span>
+                    )}
+                    <span className="text-xs text-muted-foreground font-medium">
+                      {user.badge ? user.badge.name : '도전 중'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Savings */}
+                <div className="text-right shrink-0">
+                  <div
+                    className={`text-sm font-extrabold tabular-nums ${
+                      user.isMe ? 'text-primary' : isFirst ? 'text-[#E5A100] dark:text-[#ffd700]' : 'text-foreground'
+                    }`}
+                  >
+                    {formatKRW(user.savings)}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground font-medium">절약</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Invite Button */}
+        <div className="mt-5 pt-4 border-t border-border">
+          <Button
+            onClick={handleInviteCopy}
+            variant="outline"
+            className="w-full rounded-xl font-semibold"
+            size="lg"
+          >
+            {inviteCopied ? (
+              <>
+                <Check className="mr-2 h-4 w-4" />
+                초대 링크 복사 완료!
+              </>
+            ) : (
+              <>
+                <UserPlus className="mr-2 h-4 w-4" />
+                친구 초대하기
+              </>
+            )}
+          </Button>
+          <p className="text-[11px] text-center text-muted-foreground mt-2 font-medium">
+            친구를 초대하고 함께 절약 대결을 시작하세요
+          </p>
+        </div>
       </div>
 
       {/* All Badges -- Grid layout */}

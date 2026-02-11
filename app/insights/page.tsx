@@ -7,6 +7,9 @@ import {
   CostFeelingMeter,
   OpportunityCostSimulator,
   ChallengeTracker,
+  SubscriptionTimeline,
+  OptimalPortfolio,
+  PatternPredictor,
 } from '@/components/innovation';
 import { Sparkles } from 'lucide-react';
 import { TossEmoji } from '@/components/ui/TossEmoji';
@@ -99,6 +102,27 @@ export default function InsightsPage() {
         {/* Section 4: Challenge Tracker */}
         <section>
           <ChallengeTracker />
+        </section>
+
+        <div className="border-t border-border" />
+
+        {/* Section 5: Subscription Timeline */}
+        <section>
+          <SubscriptionTimeline />
+        </section>
+
+        <div className="border-t border-border" />
+
+        {/* Section 6: Optimal Portfolio */}
+        <section>
+          <OptimalPortfolio />
+        </section>
+
+        <div className="border-t border-border" />
+
+        {/* Section 7: Pattern Predictor */}
+        <section>
+          <PatternPredictor />
         </section>
       </div>
 
