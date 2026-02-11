@@ -76,9 +76,9 @@ export function ROIScoreCard({ analysis }: ROIScoreCardProps) {
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground mb-1">분당 비용</p>
+            <p className="text-xs text-muted-foreground mb-1">시간당 비용</p>
             <p className="text-lg font-semibold">
-              {analysis.costPerMinute > 0 ? `${formatKRW(analysis.costPerMinute)}` : '-'}
+              {analysis.costPerMinute > 0 ? formatKRW(analysis.costPerMinute * 60, 1) : '-'}
             </p>
           </div>
         </div>

@@ -89,10 +89,10 @@ export function ROIRankingList({ analyses }: ROIRankingListProps) {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">분당 비용</span>
+                    <span className="text-muted-foreground">시간당 비용</span>
                     <span className="font-medium">
                       {analysis.costPerMinute > 0
-                        ? `${formatKRW(analysis.costPerMinute)}`
+                        ? formatKRW(analysis.costPerMinute * 60, 1)
                         : '미사용'}
                     </span>
                   </div>

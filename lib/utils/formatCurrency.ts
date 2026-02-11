@@ -1,8 +1,16 @@
 /**
  * Format a number as Korean Won currency
  * e.g., 12500 -> "₩12,500"
+ * With decimals: 12500.5 -> "₩12,500.5"
  */
-export function formatKRW(amount: number): string {
+export function formatKRW(amount: number, decimals?: number): string {
+  if (decimals !== undefined) {
+    return `₩${amount.toLocaleString('ko-KR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
+  }
+  // Show 1 decimal if amount has fractional part
+  if (amount % 1 !== 0) {
+    return `₩${amount.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}`;
+  }
   return `₩${amount.toLocaleString('ko-KR')}`;
 }
 

@@ -24,7 +24,7 @@ export const DNA_PROFILES: Record<DNAType, DNAProfile> = {
     type: 'entertainment',
     name: '엔터테인먼트 마니아',
     description: '영상과 음악을 사랑하는 당신! 콘텐츠 소비의 달인이에요.',
-    emoji: '🎭',
+    emoji: '🎬',
     characteristics: [
       'OTT 서비스를 2개 이상 구독',
       '음악 스트리밍 필수',
@@ -36,7 +36,7 @@ export const DNA_PROFILES: Record<DNAType, DNAProfile> = {
     type: 'productivity',
     name: '생산성 전문가',
     description: '업무와 자기계발에 투자하는 프로페셔널!',
-    emoji: '⚡',
+    emoji: '💼',
     characteristics: [
       '생산성 도구 중심 구독',
       '클라우드 스토리지 활용',
@@ -48,7 +48,7 @@ export const DNA_PROFILES: Record<DNAType, DNAProfile> = {
     type: 'balanced',
     name: '밸런스 마스터',
     description: '엔터테인먼트와 생산성의 균형을 잡는 지혜로운 소비자!',
-    emoji: '⚖️',
+    emoji: '🎯',
     characteristics: [
       '다양한 카테고리 구독',
       '적절한 소비 패턴',
@@ -60,7 +60,7 @@ export const DNA_PROFILES: Record<DNAType, DNAProfile> = {
     type: 'minimalist',
     name: '미니멀리스트',
     description: '꼭 필요한 것만 구독하는 현명한 소비자!',
-    emoji: '🧘',
+    emoji: '🧘‍♂️',
     characteristics: [
       '최소한의 구독만 유지',
       '높은 활용도',
@@ -84,7 +84,7 @@ export const DNA_PROFILES: Record<DNAType, DNAProfile> = {
     type: 'techie',
     name: '테크 얼리어답터',
     description: 'AI, 클라우드, 생산성 도구를 사랑하는 기술 애호가!',
-    emoji: '🤖',
+    emoji: '⚙️',
     characteristics: [
       'AI/생산성 도구 다수 구독',
       '클라우드 의존도 높음',
@@ -96,7 +96,7 @@ export const DNA_PROFILES: Record<DNAType, DNAProfile> = {
     type: 'shopper',
     name: '스마트 쇼퍼',
     description: '쇼핑 멤버십을 적극 활용하는 합리적인 소비자!',
-    emoji: '🛒',
+    emoji: '🛍️',
     characteristics: [
       '쇼핑 멤버십 다수 이용',
       '무료배송/적립 혜택 활용',
