@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       provider: 'kakao',
       options: {
         redirectTo: typeof window !== 'undefined'
-          ? window.location.origin + '/party'
+          ? window.location.origin + '/'
           : undefined,
       },
     });
