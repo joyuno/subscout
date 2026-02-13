@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Sidebar, MobileNav } from '@/components/layout';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { AuthProvider } from '@/lib/auth/AuthContext';
+import { SupabaseSyncProvider } from '@/components/SupabaseSyncProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -23,28 +25,31 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <head>
-        <title>SubScout - 구독 관리 플랫폼</title>
+        <title>해독 - 구독의 독을 해독하다</title>
         <meta
           name="description"
-          content="구독 서비스를 효율적으로 관리하고 최적화하세요"
+          content="구독의 독을 해독하세요. 불필요한 구독을 찾아내고 절약하는 스마트 구독 매니저"
         />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
       >
         <ThemeProvider>
-          <div className="min-h-screen">
-            {/* Desktop Sidebar */}
-            <Sidebar />
+          <AuthProvider>
+            <SupabaseSyncProvider />
+            <div className="min-h-screen">
+              {/* Desktop Sidebar */}
+              <Sidebar />
 
-            {/* Main Content Area */}
-            <div className="lg:pl-64">
-              <main className="min-h-screen pb-20 lg:pb-0">{children}</main>
+              {/* Main Content Area */}
+              <div className="lg:pl-64">
+                <main className="min-h-screen pb-20 lg:pb-0">{children}</main>
+              </div>
+
+              {/* Mobile Bottom Navigation */}
+              <MobileNav />
             </div>
-
-            {/* Mobile Bottom Navigation */}
-            <MobileNav />
-          </div>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

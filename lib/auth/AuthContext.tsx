@@ -17,6 +17,7 @@ interface AuthContextType {
   signInWithKakao: () => Promise<void>;
   signOut: () => Promise<void>;
   updateNickname: (nickname: string) => Promise<void>;
+  deleteAccount: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -90,8 +91,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
+  const deleteAccount = useCallback(async (): Promise<boolean> => {
+    if (!user) return false;
+    // Delete user's party messages
+    await supabase.from('party_messages').delete().eq('sender_id', user.id);
+    // Delete user's party applications
+    await supabase.from('party_applications').delete().eq('applicant_id', user.id);
+    // Delete user's party posts
+    await supabase.from('public_party_posts').delete().eq('author_id', user.id);
+    // Delete user's subscriptions
+    await supabase.from('subscriptions').delete().eq('user_id', user.id);
+    // Delete user's usage records
+    await supabase.from('usage_records').delete().eq('user_id', user.id);
+    // Delete profile
+    await supabase.from('profiles').delete().eq('id', user.id);
+    // Sign out
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
+    return true;
+  }, [user]);
+
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signInWithKakao, signOut, updateNickname }}>
+    <AuthContext.Provider value={{ user, profile, loading, signInWithKakao, signOut, updateNickname, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

@@ -8,6 +8,7 @@ import type {
   SubscriptionStatus,
 } from '@/lib/types/subscription';
 import { calculateMonthlyPrice } from '@/lib/calculations/costAnalysis';
+import { supabase } from '@/lib/supabase';
 
 export interface AddSubscriptionInput {
   name: string;
@@ -95,6 +96,20 @@ export const useSubscriptionStore = create<SubscriptionState>()(
           subscriptions: [...state.subscriptions, newSub],
         }));
 
+        // Sync to Supabase
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          if (user) {
+            supabase.from('subscriptions').upsert({
+              id: newSub.id, user_id: user.id, name: newSub.name, category: newSub.category,
+              icon: newSub.icon, billing_cycle: newSub.billingCycle, price: newSub.price,
+              monthly_price: newSub.monthlyPrice, billing_day: newSub.billingDay,
+              status: newSub.status, is_shared: newSub.isShared, shared_count: newSub.sharedCount,
+              trial_end_date: newSub.trialEndDate, memo: newSub.memo, plan_name: newSub.planName,
+              created_at: newSub.createdAt, updated_at: newSub.updatedAt,
+            }).then(() => {});
+          }
+        });
+
         return newSub;
       },
 
@@ -114,7 +129,7 @@ export const useSubscriptionStore = create<SubscriptionState>()(
               updatedCycle,
             );
 
-            return {
+            const updated = {
               ...sub,
               ...input,
               price: updatedPrice,
@@ -122,6 +137,22 @@ export const useSubscriptionStore = create<SubscriptionState>()(
               monthlyPrice,
               updatedAt: new Date().toISOString(),
             };
+
+            // Sync to Supabase
+            supabase.auth.getUser().then(({ data: { user } }) => {
+              if (user) {
+                supabase.from('subscriptions').update({
+                  name: updated.name, category: updated.category, icon: updated.icon,
+                  billing_cycle: updated.billingCycle, price: updated.price,
+                  monthly_price: updated.monthlyPrice, billing_day: updated.billingDay,
+                  status: updated.status, is_shared: updated.isShared, shared_count: updated.sharedCount,
+                  trial_end_date: updated.trialEndDate, memo: updated.memo, plan_name: updated.planName,
+                  updated_at: updated.updatedAt,
+                }).eq('id', id).then(() => {});
+              }
+            });
+
+            return updated;
           }),
         }));
       },
@@ -130,6 +161,13 @@ export const useSubscriptionStore = create<SubscriptionState>()(
         set((state) => ({
           subscriptions: state.subscriptions.filter((sub) => sub.id !== id),
         }));
+
+        // Sync to Supabase
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          if (user) {
+            supabase.from('subscriptions').delete().eq('id', id).then(() => {});
+          }
+        });
       },
 
       cancelSubscription: (id) => {
@@ -152,6 +190,13 @@ export const useSubscriptionStore = create<SubscriptionState>()(
             cancelledSub,
           ],
         }));
+
+        // Sync to Supabase
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          if (user) {
+            supabase.from('subscriptions').update({ status: 'cancelled', updated_at: now }).eq('id', id).then(() => {});
+          }
+        });
       },
 
       reactivateSubscription: (id) => {
@@ -166,6 +211,13 @@ export const useSubscriptionStore = create<SubscriptionState>()(
             (s) => s.id !== id,
           ),
         }));
+
+        // Sync to Supabase
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          if (user) {
+            supabase.from('subscriptions').update({ status: 'active', updated_at: now }).eq('id', id).then(() => {});
+          }
+        });
       },
 
       getSubscription: (id) => {
@@ -203,7 +255,7 @@ export const useSubscriptionStore = create<SubscriptionState>()(
       },
     }),
     {
-      name: 'subscout-subscriptions',
+      name: 'haedok-subscriptions',
     },
   ),
 );

@@ -2,10 +2,12 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
 import type { WeeklyUsage, ROIAnalysis } from '@/lib/types/usage';
-import type { Subscription } from '@/lib/types/subscription';
+import type { Subscription, UsageMetricType } from '@/lib/types/subscription';
+import { CATEGORY_METRIC } from '@/lib/types/subscription';
 import { calculateROIAnalysis } from '@/lib/calculations/roi';
 import { SERVICE_PRESETS } from '@/lib/constants/servicePresets';
 import type { ParsedUsageEntry } from '@/lib/utils/csvParser';
+import { supabase } from '@/lib/supabase';
 
 interface UsageState {
   usageRecords: WeeklyUsage[];
@@ -16,6 +18,7 @@ interface UsageState {
     weekStartDate: string,
     usageMinutes: number,
     inputMethod: 'manual' | 'csv' | 'feeling',
+    metricType?: UsageMetricType,
   ) => WeeklyUsage;
   updateUsage: (id: string, usageMinutes: number) => void;
   deleteUsage: (id: string) => void;
@@ -40,19 +43,32 @@ export const useUsageStore = create<UsageState>()(
     (set, get) => ({
       usageRecords: [],
 
-      addUsage: (subscriptionId, weekStartDate, usageMinutes, inputMethod) => {
+      addUsage: (subscriptionId, weekStartDate, usageMinutes, inputMethod, metricType) => {
         const record: WeeklyUsage = {
           id: uuidv4(),
           subscriptionId,
           weekStartDate,
           usageMinutes,
           inputMethod,
+          metricType,
           createdAt: new Date().toISOString(),
         };
 
         set((state) => ({
           usageRecords: [...state.usageRecords, record],
         }));
+
+        // Sync to Supabase
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          if (user) {
+            supabase.from('usage_records').upsert({
+              id: record.id, user_id: user.id, subscription_id: record.subscriptionId,
+              week_start_date: record.weekStartDate, usage_minutes: record.usageMinutes,
+              metric_type: record.metricType, input_method: record.inputMethod,
+              created_at: record.createdAt,
+            }).then(() => {});
+          }
+        });
 
         return record;
       },
@@ -63,12 +79,28 @@ export const useUsageStore = create<UsageState>()(
             r.id === id ? { ...r, usageMinutes } : r,
           ),
         }));
+
+        // Sync to Supabase
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          if (user) {
+            supabase.from('usage_records').update({
+              usage_minutes: usageMinutes, updated_at: new Date().toISOString(),
+            }).eq('id', id).then(() => {});
+          }
+        });
       },
 
       deleteUsage: (id) => {
         set((state) => ({
           usageRecords: state.usageRecords.filter((r) => r.id !== id),
         }));
+
+        // Sync to Supabase
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          if (user) {
+            supabase.from('usage_records').delete().eq('id', id).then(() => {});
+          }
+        });
       },
 
       importFromCSV: (entries, subscriptionMap) => {
@@ -129,16 +161,18 @@ export const useUsageStore = create<UsageState>()(
         );
 
         return active.map((sub) => {
+          const latestUsage = get().getLatestUsage(sub.id);
           const weeklyUsage = get().getAverageWeeklyUsage(sub.id);
           const preset = SERVICE_PRESETS[sub.name];
           const sharingAvailable = !!preset?.familyPlan && !sub.isShared;
+          const metricType = latestUsage?.metricType || CATEGORY_METRIC[sub.category];
 
-          return calculateROIAnalysis(sub, weeklyUsage, sharingAvailable);
+          return calculateROIAnalysis(sub, weeklyUsage, sharingAvailable, metricType);
         });
       },
     }),
     {
-      name: 'subscout-usage',
+      name: 'haedok-usage',
     },
   ),
 );
