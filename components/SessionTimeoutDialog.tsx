@@ -11,58 +11,82 @@ import {
 } from '@/components/ui/dialog';
 
 const SESSION_TIMEOUT_MS = 2 * 60 * 60 * 1000; // 2 hours
+const ACTIVITY_EVENTS = ['mousedown', 'keydown', 'scroll', 'touchstart'] as const;
+const THROTTLE_MS = 60 * 1000; // 1분마다 활동 시간 갱신
 
 export function SessionTimeoutDialog() {
   const { user, signOut, signInWithKakao } = useAuth();
   const [showDialog, setShowDialog] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const loginTimeRef = useRef<number | null>(null);
+  const lastActivityRef = useRef<number>(Date.now());
 
-  const handleTimeout = useCallback(async () => {
-    await signOut();
-    setShowDialog(true);
-  }, [signOut]);
-
-  const startTimer = useCallback(() => {
+  const clearTimer = useCallback(() => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
+      timerRef.current = null;
     }
-    loginTimeRef.current = Date.now();
-    timerRef.current = setTimeout(handleTimeout, SESSION_TIMEOUT_MS);
-  }, [handleTimeout]);
+  }, []);
 
+  const handleTimeout = useCallback(async () => {
+    clearTimer();
+    sessionStorage.removeItem('haedok_last_activity');
+    await signOut();
+    setShowDialog(true);
+  }, [signOut, clearTimer]);
+
+  const resetTimer = useCallback(() => {
+    clearTimer();
+    lastActivityRef.current = Date.now();
+    sessionStorage.setItem('haedok_last_activity', Date.now().toString());
+    timerRef.current = setTimeout(handleTimeout, SESSION_TIMEOUT_MS);
+  }, [handleTimeout, clearTimer]);
+
+  // 사용자 활동 감지 (쓰로틀링)
+  useEffect(() => {
+    if (!user) return;
+
+    let lastThrottled = 0;
+    const handleActivity = () => {
+      const now = Date.now();
+      if (now - lastThrottled < THROTTLE_MS) return;
+      lastThrottled = now;
+      resetTimer();
+    };
+
+    ACTIVITY_EVENTS.forEach(event =>
+      window.addEventListener(event, handleActivity, { passive: true })
+    );
+
+    return () => {
+      ACTIVITY_EVENTS.forEach(event =>
+        window.removeEventListener(event, handleActivity)
+      );
+    };
+  }, [user, resetTimer]);
+
+  // 로그인 상태 변화 감지
   useEffect(() => {
     if (user) {
-      // Check if there's a stored login time
-      const storedLoginTime = sessionStorage.getItem('haedok_login_time');
-      if (storedLoginTime) {
-        const elapsed = Date.now() - parseInt(storedLoginTime, 10);
+      const storedActivity = sessionStorage.getItem('haedok_last_activity');
+      if (storedActivity) {
+        const elapsed = Date.now() - parseInt(storedActivity, 10);
         const remaining = SESSION_TIMEOUT_MS - elapsed;
         if (remaining <= 0) {
           handleTimeout();
           return;
         }
-        loginTimeRef.current = parseInt(storedLoginTime, 10);
+        lastActivityRef.current = parseInt(storedActivity, 10);
         timerRef.current = setTimeout(handleTimeout, remaining);
       } else {
-        sessionStorage.setItem('haedok_login_time', Date.now().toString());
-        startTimer();
+        resetTimer();
       }
     } else {
-      // User logged out, clear timer
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
-      }
-      sessionStorage.removeItem('haedok_login_time');
+      clearTimer();
+      sessionStorage.removeItem('haedok_last_activity');
     }
 
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [user, handleTimeout, startTimer]);
+    return clearTimer;
+  }, [user, handleTimeout, resetTimer, clearTimer]);
 
   const handleRelogin = () => {
     setShowDialog(false);
@@ -80,7 +104,7 @@ export function SessionTimeoutDialog() {
         </DialogHeader>
         <div className="space-y-4 pt-2">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            보안을 위해 2시간이 경과하여 자동으로 로그아웃되었습니다.
+            보안을 위해 2시간 동안 활동이 없어 자동으로 로그아웃되었습니다.
             <br />
             계속 사용하시려면 다시 로그인해 주세요.
           </p>
