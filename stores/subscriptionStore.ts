@@ -60,6 +60,19 @@ interface SubscriptionState {
   getSubscriptionCount: () => number;
 }
 
+async function syncSubscriptionToSupabase(action: string, fn: () => Promise<{ error: any }>) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { error } = await fn();
+    if (error) {
+      console.error(`[Supabase] ${action} 실패:`, error.message);
+    }
+  } catch (e) {
+    console.error(`[Supabase] ${action} 에러:`, e);
+  }
+}
+
 export const useSubscriptionStore = create<SubscriptionState>()(
   persist(
     (set, get) => ({
@@ -96,18 +109,16 @@ export const useSubscriptionStore = create<SubscriptionState>()(
           subscriptions: [...state.subscriptions, newSub],
         }));
 
-        // Sync to Supabase
-        supabase.auth.getUser().then(({ data: { user } }) => {
-          if (user) {
-            supabase.from('subscriptions').upsert({
-              id: newSub.id, user_id: user.id, name: newSub.name, category: newSub.category,
-              icon: newSub.icon, billing_cycle: newSub.billingCycle, price: newSub.price,
-              monthly_price: newSub.monthlyPrice, billing_day: newSub.billingDay,
-              status: newSub.status, is_shared: newSub.isShared, shared_count: newSub.sharedCount,
-              trial_end_date: newSub.trialEndDate, memo: newSub.memo, plan_name: newSub.planName,
-              created_at: newSub.createdAt, updated_at: newSub.updatedAt,
-            }).then(() => {});
-          }
+        syncSubscriptionToSupabase('구독 추가', async () => {
+          const { data: { user } } = await supabase.auth.getUser();
+          return supabase.from('subscriptions').upsert({
+            id: newSub.id, user_id: user!.id, name: newSub.name, category: newSub.category,
+            icon: newSub.icon, billing_cycle: newSub.billingCycle, price: newSub.price,
+            monthly_price: newSub.monthlyPrice, billing_day: newSub.billingDay,
+            status: newSub.status, is_shared: newSub.isShared, shared_count: newSub.sharedCount,
+            trial_end_date: newSub.trialEndDate, memo: newSub.memo, plan_name: newSub.planName,
+            created_at: newSub.createdAt, updated_at: newSub.updatedAt,
+          });
         });
 
         return newSub;
@@ -129,7 +140,7 @@ export const useSubscriptionStore = create<SubscriptionState>()(
               updatedCycle,
             );
 
-            const updated = {
+            return {
               ...sub,
               ...input,
               price: updatedPrice,
@@ -137,24 +148,22 @@ export const useSubscriptionStore = create<SubscriptionState>()(
               monthlyPrice,
               updatedAt: new Date().toISOString(),
             };
-
-            // Sync to Supabase
-            supabase.auth.getUser().then(({ data: { user } }) => {
-              if (user) {
-                supabase.from('subscriptions').update({
-                  name: updated.name, category: updated.category, icon: updated.icon,
-                  billing_cycle: updated.billingCycle, price: updated.price,
-                  monthly_price: updated.monthlyPrice, billing_day: updated.billingDay,
-                  status: updated.status, is_shared: updated.isShared, shared_count: updated.sharedCount,
-                  trial_end_date: updated.trialEndDate, memo: updated.memo, plan_name: updated.planName,
-                  updated_at: updated.updatedAt,
-                }).eq('id', id).then(() => {});
-              }
-            });
-
-            return updated;
           }),
         }));
+
+        const updated = get().subscriptions.find((s) => s.id === id);
+        if (updated) {
+          syncSubscriptionToSupabase('구독 수정', async () =>
+            supabase.from('subscriptions').update({
+              name: updated.name, category: updated.category, icon: updated.icon,
+              billing_cycle: updated.billingCycle, price: updated.price,
+              monthly_price: updated.monthlyPrice, billing_day: updated.billingDay,
+              status: updated.status, is_shared: updated.isShared, shared_count: updated.sharedCount,
+              trial_end_date: updated.trialEndDate, memo: updated.memo, plan_name: updated.planName,
+              updated_at: updated.updatedAt,
+            }).eq('id', id),
+          );
+        }
       },
 
       deleteSubscription: (id) => {
@@ -162,12 +171,9 @@ export const useSubscriptionStore = create<SubscriptionState>()(
           subscriptions: state.subscriptions.filter((sub) => sub.id !== id),
         }));
 
-        // Sync to Supabase
-        supabase.auth.getUser().then(({ data: { user } }) => {
-          if (user) {
-            supabase.from('subscriptions').delete().eq('id', id).then(() => {});
-          }
-        });
+        syncSubscriptionToSupabase('구독 삭제', async () =>
+          supabase.from('subscriptions').delete().eq('id', id),
+        );
       },
 
       cancelSubscription: (id) => {
@@ -191,12 +197,9 @@ export const useSubscriptionStore = create<SubscriptionState>()(
           ],
         }));
 
-        // Sync to Supabase
-        supabase.auth.getUser().then(({ data: { user } }) => {
-          if (user) {
-            supabase.from('subscriptions').update({ status: 'cancelled', updated_at: now }).eq('id', id).then(() => {});
-          }
-        });
+        syncSubscriptionToSupabase('구독 취소', async () =>
+          supabase.from('subscriptions').update({ status: 'cancelled', updated_at: now }).eq('id', id),
+        );
       },
 
       reactivateSubscription: (id) => {
@@ -212,12 +215,9 @@ export const useSubscriptionStore = create<SubscriptionState>()(
           ),
         }));
 
-        // Sync to Supabase
-        supabase.auth.getUser().then(({ data: { user } }) => {
-          if (user) {
-            supabase.from('subscriptions').update({ status: 'active', updated_at: now }).eq('id', id).then(() => {});
-          }
-        });
+        syncSubscriptionToSupabase('구독 재활성화', async () =>
+          supabase.from('subscriptions').update({ status: 'active', updated_at: now }).eq('id', id),
+        );
       },
 
       getSubscription: (id) => {
