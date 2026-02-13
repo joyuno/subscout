@@ -731,6 +731,20 @@ export const SERVICE_PRESETS: Record<string, ServicePreset> = {
     brandColor: '#FF9900',
     domain: 'amazon.com',
   },
+
+  /* ── 금융 ────────────────────────────────────────────────── */
+  '토스 프라임': {
+    name: '토스 프라임',
+    category: 'other',
+    icon: '💙',
+    plans: [{ name: '월간', price: 5900, cycle: 'monthly' }],
+    familyPlan: null,
+    note: '송금 수수료 면제, 토스증권 혜택, 보험 할인, 은행 금리 우대 등',
+    cancellationUrl: 'https://app.toss.im',
+    brandColor: '#0064FF',
+    domain: 'toss.im',
+    logoUrl: 'https://icon.horse/icon/toss.im?size=large',
+  },
 };
 
 /** Array version for iteration */

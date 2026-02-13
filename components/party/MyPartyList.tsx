@@ -121,6 +121,23 @@ export function MyPartyList({ onCreateClick, onPartyClick }: MyPartyListProps) {
     );
   }
 
+  if (!user) {
+    return (
+      <Card className="rounded-2xl">
+        <CardContent className="py-20 text-center">
+          <LogIn className="h-20 w-20 mx-auto text-muted-foreground/30 mb-6" />
+          <h3 className="text-2xl font-bold mb-3">로그인이 필요합니다</h3>
+          <p className="text-muted-foreground mb-8 text-lg">
+            파티 기능을 이용하려면 로그인해주세요
+          </p>
+          <p className="text-sm text-muted-foreground">
+            우측 상단의 카카오 로그인 버튼을 눌러주세요
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (parties.length === 0) {
     return (
       <Card className="rounded-2xl">
