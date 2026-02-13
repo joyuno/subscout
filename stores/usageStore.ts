@@ -11,8 +11,8 @@ import { supabase } from '@/lib/supabase';
 
 async function syncUsageToSupabase(action: string, fn: () => Promise<{ error: any }>) {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return;
     const { error } = await fn();
     if (error) {
       console.error(`[Supabase] ${action} 실패:`, error.message);
@@ -72,9 +72,9 @@ export const useUsageStore = create<UsageState>()(
         }));
 
         syncUsageToSupabase('사용량 추가', async () => {
-          const { data: { user } } = await supabase.auth.getUser();
+          const { data: { session } } = await supabase.auth.getSession();
           return supabase.from('usage_records').upsert({
-            id: record.id, user_id: user!.id, subscription_id: record.subscriptionId,
+            id: record.id, user_id: session!.user.id, subscription_id: record.subscriptionId,
             week_start_date: record.weekStartDate, usage_minutes: record.usageMinutes,
             metric_type: record.metricType, input_method: record.inputMethod,
             created_at: record.createdAt,
@@ -135,10 +135,10 @@ export const useUsageStore = create<UsageState>()(
           // Bulk sync to Supabase
           (async () => {
             try {
-              const { data: { user } } = await supabase.auth.getUser();
-              if (!user) return;
+              const { data: { session } } = await supabase.auth.getSession();
+              if (!session?.user) return;
               const rows = newRecords.map((r) => ({
-                id: r.id, user_id: user.id, subscription_id: r.subscriptionId,
+                id: r.id, user_id: session.user.id, subscription_id: r.subscriptionId,
                 week_start_date: r.weekStartDate, usage_minutes: r.usageMinutes,
                 input_method: r.inputMethod, created_at: r.createdAt,
               }));

@@ -304,30 +304,41 @@ export function StockInvestmentChart() {
           )}
 
           {/* 감성 훅 메시지 -- Cinematic CTA */}
-          {lastPoint && selectedSubIds.size > 0 && (
-            <div className="mx-6 mb-6">
-              <div className="relative overflow-hidden rounded-2xl bg-primary/[0.04] border border-primary/12 p-7 text-center">
-                {/* Ambient glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full blur-[80px] opacity-[0.06] pointer-events-none bg-primary" />
-                <div className="relative">
-                  <p className="text-[13px] font-semibold text-foreground/80 mb-3">
-                    {Array.from(selectedSubIds)
-                      .slice(0, 2)
-                      .map((id) => activeSubscriptions.find((s) => s.id === id)?.name)
-                      .filter(Boolean)
-                      .join(', ')}{' '}
-                    대신 투자했다면...
-                  </p>
-                  <p className="text-[1.75rem] sm:text-[2.5rem] font-extrabold text-primary tracking-tight leading-none mb-2">
-                    {formatKRWCompact(lastPoint[STOCK_CONFIGS[1].name] as number)}
-                  </p>
-                  <p className="text-sm text-muted-foreground font-medium">
-                    를 모을 수 있었어요 ({STOCK_CONFIGS[1].name} 기준, {selectedPeriod.label})
-                  </p>
+          {lastPoint && selectedSubIds.size > 0 && (() => {
+            // Find the stock with the highest final value
+            const bestStock = STOCK_CONFIGS.reduce((best, config) => {
+              const currentValue = lastPoint[config.name] as number;
+              const bestValue = lastPoint[best.name] as number;
+              return currentValue > bestValue ? config : best;
+            }, STOCK_CONFIGS[0]);
+
+            const bestValue = lastPoint[bestStock.name] as number;
+
+            return (
+              <div className="mx-6 mb-6">
+                <div className="relative overflow-hidden rounded-2xl bg-primary/[0.04] border border-primary/12 p-7 text-center">
+                  {/* Ambient glow */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full blur-[80px] opacity-[0.06] pointer-events-none bg-primary" />
+                  <div className="relative">
+                    <p className="text-[13px] font-semibold text-foreground/80 mb-3">
+                      {Array.from(selectedSubIds)
+                        .slice(0, 2)
+                        .map((id) => activeSubscriptions.find((s) => s.id === id)?.name)
+                        .filter(Boolean)
+                        .join(', ')}{' '}
+                      대신 투자했다면...
+                    </p>
+                    <p className="text-[1.75rem] sm:text-[2.5rem] font-extrabold text-primary tracking-tight leading-none mb-2">
+                      {formatKRWCompact(bestValue)}
+                    </p>
+                    <p className="text-sm text-muted-foreground font-medium">
+                      를 모을 수 있었어요 ({bestStock.name} 기준, {selectedPeriod.label})
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           <div className="px-6 pb-5">
             <p className="text-[10px] text-muted-foreground/60 font-medium text-center">
