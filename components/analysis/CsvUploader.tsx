@@ -116,10 +116,19 @@ export function CsvUploader({ onComplete }: CsvUploaderProps) {
     const activeNames = subscriptions
       .filter((s) => s.status === 'active' || s.status === 'trial')
       .map((s) => s.name);
-    const header = 'App Name,Weekly Hours';
+
+    // Use format that matches the parser expectations
+    const header = 'App Name,Date,Usage Time';
+    const today = new Date().toISOString().split('T')[0];
+
     const rows = activeNames.length > 0
-      ? activeNames.map((name) => `${name},0`)
-      : ['넷플릭스,3', '유튜브 프리미엄,7', '스포티파이,5'];
+      ? activeNames.map((name) => `${name},${today},0h 0m`)
+      : [
+          `넷플릭스,${today},3h 0m`,
+          `유튜브 프리미엄,${today},7h 0m`,
+          `스포티파이,${today},5h 0m`
+        ];
+
     const csv = [header, ...rows].join('\n');
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);

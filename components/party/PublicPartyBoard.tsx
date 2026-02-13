@@ -87,7 +87,7 @@ function formatRelativeDate(dateStr: string): string {
 // ── Component ──────────────────────────────────────────────────
 
 export function PublicPartyBoard() {
-  const { user, profile, signInWithKakao, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
 
   // Data
   const [posts, setPosts] = useState<PublicPartyPost[]>([]);
@@ -346,15 +346,10 @@ export function PublicPartyBoard() {
           <Button variant="ghost" size="sm" onClick={fetchPosts} className="rounded-lg">
             <RefreshCw className="h-4 w-4" />
           </Button>
-          {user ? (
+          {user && (
             <Button onClick={() => setShowCreateDialog(true)} size="sm" className="rounded-lg font-semibold">
               <Plus className="mr-1.5 h-4 w-4" />
               모집글 작성
-            </Button>
-          ) : (
-            <Button onClick={signInWithKakao} size="sm" className="rounded-lg font-semibold bg-[#FEE500] text-[#3C1E1E] hover:bg-[#FDD835]">
-              <LogIn className="mr-1.5 h-4 w-4" />
-              카카오 로그인
             </Button>
           )}
         </div>
@@ -366,12 +361,8 @@ export function PublicPartyBoard() {
           <CardContent className="py-6 text-center">
             <LogIn className="h-10 w-10 mx-auto text-primary/40 mb-3" />
             <p className="text-muted-foreground font-medium">
-              카카오 로그인 후 파티에 가입 신청하거나 모집글을 작성할 수 있어요
+              우측 상단의 카카오 로그인 후 파티에 가입 신청하거나 모집글을 작성할 수 있어요
             </p>
-            <Button onClick={signInWithKakao} className="mt-4 rounded-xl bg-[#FEE500] text-[#3C1E1E] hover:bg-[#FDD835] font-semibold">
-              <MessageCircle className="mr-2 h-4 w-4" />
-              카카오톡으로 시작하기
-            </Button>
           </CardContent>
         </Card>
       )}
@@ -492,10 +483,10 @@ export function PublicPartyBoard() {
                         variant="outline"
                         size="sm"
                         className="flex-1 rounded-xl"
-                        onClick={signInWithKakao}
+                        disabled
                       >
                         <LogIn className="mr-1.5 h-3.5 w-3.5" />
-                        로그인 후 신청
+                        로그인 필요
                       </Button>
                     ) : myApp?.status === 'pending' ? (
                       <Button variant="secondary" size="sm" className="flex-1 rounded-xl" disabled>

@@ -41,7 +41,7 @@ interface JoinByCodeFormProps {
 }
 
 export function JoinByCodeForm({ initialCode = '' }: JoinByCodeFormProps) {
-  const { user, profile, signInWithKakao } = useAuth();
+  const { user, profile } = useAuth();
 
   const [code, setCode] = useState(initialCode);
   const [foundParty, setFoundParty] = useState<FoundParty | null>(null);
@@ -205,14 +205,13 @@ export function JoinByCodeForm({ initialCode = '' }: JoinByCodeFormProps) {
                 이 파티는 현재 모집이 마감되었습니다
               </div>
             ) : !user ? (
-              <Button
-                onClick={signInWithKakao}
-                className="w-full rounded-xl font-semibold bg-[#FEE500] text-[#3C1E1E] hover:bg-[#FDD835]"
-                size="lg"
-              >
-                <LogIn className="mr-2 h-4 w-4" />
-                카카오 로그인 후 신청하기
-              </Button>
+              <div className="text-center py-6 space-y-3">
+                <LogIn className="h-12 w-12 mx-auto text-primary/40" />
+                <p className="text-sm text-muted-foreground">
+                  우측 상단의 카카오 로그인 버튼을 눌러 로그인 후<br />
+                  파티에 가입 신청할 수 있습니다
+                </p>
+              </div>
             ) : (
               <div className="space-y-3">
                 <div className="space-y-2">

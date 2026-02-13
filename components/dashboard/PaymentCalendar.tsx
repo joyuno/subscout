@@ -10,8 +10,10 @@ interface PaymentCalendarProps {
 }
 
 export function PaymentCalendar({ subscriptions }: PaymentCalendarProps) {
-  // Get current month and filter active subscriptions
+  // Get next month and filter active subscriptions
   const today = new Date();
+  const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+  const nextMonthNumber = nextMonth.getMonth() + 1;
   const currentDay = today.getDate();
 
   // Split into upcoming (future/today) and past, each sorted by billingDay
@@ -65,7 +67,7 @@ export function PaymentCalendar({ subscriptions }: PaymentCalendarProps) {
               : 'bg-accent text-foreground'
         }`}>
           <span className="text-[10px] font-semibold leading-none opacity-70">
-            {isToday ? '오늘' : `${today.getMonth() + 1}월`}
+            {isToday ? '오늘' : `${nextMonthNumber}월`}
           </span>
           <span className="text-base font-extrabold leading-tight">
             {sub.billingDay}
@@ -95,7 +97,7 @@ export function PaymentCalendar({ subscriptions }: PaymentCalendarProps) {
               )}
               {!isToday && !isPast && (
                 <span className="text-[10px] text-muted-foreground font-medium">
-                  {sub.billingDay - currentDay}일 후
+                  {sub.billingDay + (new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate() - currentDay)}일 후
                 </span>
               )}
             </div>
@@ -120,7 +122,7 @@ export function PaymentCalendar({ subscriptions }: PaymentCalendarProps) {
   const totalAll = activePayments.length;
 
   return (
-    <div className="space-y-1" role="list" aria-label="이번 달 결제 일정">
+    <div className="space-y-1" role="list" aria-label="다음 달 결제 일정">
       {/* Upcoming payments */}
       {upcomingDisplay.length > 0 && (
         <>
