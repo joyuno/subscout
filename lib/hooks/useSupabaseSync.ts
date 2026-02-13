@@ -40,6 +40,16 @@ export function useSupabaseSync() {
     prevUserId.current = user.id;
     setCachedUserId(user.id);
 
+    // 이전 localStorage 데이터 정리 (persist 미들웨어 제거 후 잔여)
+    if (typeof window !== 'undefined') {
+      ['haedok-subscriptions', 'haedok-usage'].forEach((key) => {
+        if (localStorage.getItem(key)) {
+          localStorage.removeItem(key);
+          console.log(`[Sync] 오래된 localStorage 키 제거: ${key}`);
+        }
+      });
+    }
+
     // Supabase에서 데이터 로드
     (async () => {
       // 1) 구독 데이터 로드
